@@ -36,13 +36,13 @@ public class NotesServiceImpl extends RemoteServiceServlet implements NotesServi
 		return PMF.getPersistenceManager();
 	}
 
-	public void setNotes(String userId, String userName, String[] notes) {
+	public void setNotes(String userId, String userName, String ownerId, String[] notes) {
 		PersistenceManager pm = getPersistenceManager();
 		try {
 			NotesData user = pm.getObjectById(NotesData.class, userId);
 			user.setNotes(notes);
 		} catch (Exception e) { // Create new object if not found
-			pm.makePersistent(new NotesData(userId, notes));
+			pm.makePersistent(new NotesData(userId, notes, ownerId));
 		} finally {
 			pm.close();
 		}

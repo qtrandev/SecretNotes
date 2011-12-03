@@ -7,5 +7,5 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface NotesService extends RemoteService {
 
 	public String[] getNotes(String userId);
-	public void setNotes(String userId, String userName, String[] notes);
+	public void setNotes(String userId, String userName, String ownerId, String[] notes);
 }

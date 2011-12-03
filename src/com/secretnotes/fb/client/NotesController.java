@@ -310,9 +310,9 @@ public class NotesController implements ValueChangeHandler<String> {
 		});
 	}
 	
-	public void persistNotes(final String userId, String userName, String[] notes, final boolean showAlert, NotesServiceAsync notesService) {
+	public void persistNotes(final String userId, String userName, String[] notes, String ownerId, final boolean showAlert, NotesServiceAsync notesService) {
 		if (Util.LOG) GWT.log("persistNotes called for "+getDataContainer().getNameList().get(userId)+" ("+userId+").");
-		notesService.setNotes(userId, userName, notes, new AsyncCallback<Void>() {
+		notesService.setNotes(userId, userName, ownerId, notes, new AsyncCallback<Void>() {
 			  public void onFailure(Throwable error) {
 				  if (Util.LOG) GWT.log("Received ERROR with persistNotes() for "+userId+".");
 			  }
@@ -323,10 +323,14 @@ public class NotesController implements ValueChangeHandler<String> {
 		  });
 	}
 	
-	public void persistNotes(final HashMap<String, String[]> userNotesMap, HashMap<String, String>  userNamesMap, NotesServiceAsync notesService) {
+	public void persistNotes(
+			final HashMap<String, String[]> userNotesMap, 
+			HashMap<String, String> userNamesMap, 
+			String ownerId,
+			NotesServiceAsync notesService) {
 		persistSuccess.clear();
 		for (final String userId : userNotesMap.keySet()) {
-			notesService.setNotes(userId, userNamesMap.get(userId), userNotesMap.get(userId), new AsyncCallback<Void>() {
+			notesService.setNotes(userId, userNamesMap.get(userId), ownerId, userNotesMap.get(userId), new AsyncCallback<Void>() {
 				  public void onFailure(Throwable error) {
 					  Window.alert("ERROR: Only "+persistSuccess.size()+" friends' notes have been saved");
 				  }

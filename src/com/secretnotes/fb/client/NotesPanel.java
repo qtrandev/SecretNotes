@@ -106,7 +106,8 @@ public class NotesPanel extends Composite {
 		int stop=0;
 		friendPanelsMap.clear();
 		for (User friend : getDataContainer().getFriendList()) {
-			fp = new FriendPanel(friend.getUserId(), friend.getProfilePic(), friend.getName(), Util.NOTES_CATEGORY);
+			fp = new FriendPanel(friend.getUserId(), friend.getProfilePic(), friend.getName(), Util.NOTES_CATEGORY, 
+					getDataContainer().getUser().getUserId());
 			fp.setStyleName("friend_panel");
 			getFriendsPanel().add(fp);
 			friendPanelsMap.put(friend.getUserId(), fp);
@@ -147,7 +148,7 @@ public class NotesPanel extends Composite {
 			userNotesMap.put(fp.getUserId(), fp.getSelectedNotes());
 			userNamesMap.put(fp.getUserId(), fp.getUserName());
 		}
-		ServerRequest.getServer().persistNotes(userNotesMap, userNamesMap);
+		ServerRequest.getServer().persistNotes(userNotesMap, userNamesMap, getDataContainer().getUser().getUserId());
 	}
 	
 	private FlowPanel getStackPanel() {

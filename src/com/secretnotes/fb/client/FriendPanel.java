@@ -20,10 +20,12 @@ public class FriendPanel extends Composite {
 	private ArrayList<CheckBox> notesList;
 	private String userId;
 	private String userName;
+	private String ownerId;
 	
-	public FriendPanel(final String userId, final String userImg, String name, String[] notesBoxes) {
+	public FriendPanel(String userId, String userImg, String name, String[] notesBoxes, String ownerId) {
 		this.userId = userId;
 		this.userName = name;
+		this.ownerId = ownerId;
 		friendStack = new FlowPanel();
 		userImage = new Image(userImg);
 		nameLabel = new Label(name);
@@ -39,7 +41,8 @@ public class FriendPanel extends Composite {
 		initWidget(friendStack);
 		setNoteButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				ServerRequest.getServer().persistNotes(userId, userName, getSelectedNotes(), true);
+				ServerRequest.getServer().persistNotes(
+						FriendPanel.this.userId, FriendPanel.this.userName, getSelectedNotes(), FriendPanel.this.ownerId, true);
 			}
 		});
 	}

@@ -11,10 +11,13 @@ public class NotesData {
 	@PrimaryKey
 	private String userId;
 	@Persistent
+	private String ownerId;
+	@Persistent
 	private String[] notes = new String[0];
 
-	public NotesData(String userId, String[] notes) {
+	public NotesData(String userId, String[] notes, String ownerId) {
 		this.userId = userId;
+		this.ownerId = ownerId;
 		this.notes = notes;
 	}
 
@@ -24,6 +27,14 @@ public class NotesData {
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+	
+	public String getOwnerId() {
+		return ownerId;
+	}
+	
+	public void setOwnerId(String ownerId) {
+		this.ownerId = ownerId;
 	}
 
 	public String[] getNotes() {

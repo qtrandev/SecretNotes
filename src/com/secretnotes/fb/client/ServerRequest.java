@@ -29,12 +29,12 @@ public class ServerRequest {
 		getServer().secretNotes = secretNotes;
 	}
 	
-	public void persistNotes(String userId, String userName, String[] notes, boolean showAlert) {
-		secretNotes.persistNotes(userId, userName, notes, showAlert, getNotesService());
+	public void persistNotes(String userId, String userName, String[] notes, String ownerId, boolean showAlert) {
+		secretNotes.persistNotes(userId, userName, notes, ownerId, showAlert, getNotesService());
 	}
 	
-	public void persistNotes(HashMap<String, String[]> userNotesMap, HashMap<String, String> userNamesMap) {
-		secretNotes.persistNotes(userNotesMap, userNamesMap, getNotesService());
+	public void persistNotes(HashMap<String, String[]> userNotesMap, HashMap<String, String> userNamesMap, String ownerId) {
+		secretNotes.persistNotes(userNotesMap, userNamesMap, ownerId, getNotesService());
 	}
 	
 	public void requestNotes(String userId) {
