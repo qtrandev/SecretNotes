@@ -28,6 +28,17 @@ public class DataContainer implements IDataContainer {
 		this.friendList = friendList;
 	}
 	
+	public User getFriendFromList(String userId) {
+		User result = null;
+		for (User user:getFriendList()) {
+			if (userId.equals(user.getUserId())) {
+				result = user;
+				break;
+			}
+		}
+		return result;
+	}
+	
 	public HashMap<String,String> getIdList() {
 		return idList;
 	}

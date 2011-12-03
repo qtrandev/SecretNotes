@@ -1,13 +1,10 @@
 package com.secretnotes.fb.client;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
@@ -17,15 +14,12 @@ import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.secretnotes.fb.client.data.IDataContainer;
 
-public class FriendsPanel extends FlowPanel {
+public class FriendsPanel extends DataRequestPanel implements DataRequester{
 	
-	private FlowPanel photosPanel;
 	private FlowPanel friendLinksPanel;
-	private IDataContainer dataContainer;
 	
 	public FriendsPanel(IDataContainer dataContainer) {
-		super();
-		this.dataContainer = dataContainer;
+		super(dataContainer);
 		initFriendsPanel();
 	}
 	
@@ -51,26 +45,10 @@ public class FriendsPanel extends FlowPanel {
 		clear();
 		add(new HTML("Making call for the list of friends..."));
 	}
-	
-	public void processPhotosRequest(JavaScriptObject response) {
-		JSOModel jso = response.cast();
-		JsArray<JSOModel> photos = jso.getArray(Util.ARRAY_DATA);
-		getPhotosPanel().add(new HTML("Photos found: "+photos.length()));
-		Anchor anchor;
-		String picture;
-		for (int i=0; i<photos.length(); i++) {
-			picture = photos.get(i).get(Util.PHOTO_PICTURE);
-			anchor = new Anchor();
-			anchor.setTarget("_blank");
-			anchor.setHref(photos.get(i).get(Util.PHOTO_SOURCE));
-			anchor.getElement().setInnerHTML("<img src='"+picture+"'/>");
-			getPhotosPanel().add(anchor);
-		}
-	}
+
 	
 	public void displayLoggedInFriendsPanel() {
 		clear();
-		getPhotosPanel().clear();
 		add(new HTML("Hi "+getDataContainer().getUser().getFirstName()+"! Type a friend's name in the box."));
 		add(new Image(getDataContainer().getUser().getProfilePic()));
 		MultiWordSuggestOracle oracle = new MultiWordSuggestOracle ();
@@ -99,32 +77,20 @@ public class FriendsPanel extends FlowPanel {
 			getFriendLinksPanel().add(friendLabel);
 		}
 
-		add(getPhotosPanel());
 		add(getFriendLinksPanel());
 		box.setFocus(true);
 		if (Util.LOG) GWT.log("Added everything needed to friends page.");
 	}
 	
-	
 	private void showPhotos(String name) {
-		getPhotosPanel().clear();
 		String id = lookUpId(name);
-		getPhotosPanel().add(new HTML(name+" ("+id+")"));
 		if (Util.LOG) GWT.log("Sending request to get photos of "+name+" ("+id+").");
-		ServerRequest.getServer().requestPhotos(id);
+		getServer().requestPhotos(id);
 	}
 
 	private String lookUpId(String name) {
 		String id = getDataContainer().getIdList().get(name);
 		return id;
-	}
-	
-	
-	private FlowPanel getPhotosPanel() {
-		if (photosPanel == null) {
-			photosPanel = new FlowPanel();
-		}
-		return photosPanel;
 	}
 	
 	private FlowPanel getFriendLinksPanel() {
@@ -133,9 +99,5 @@ public class FriendsPanel extends FlowPanel {
 			friendLinksPanel.getElement().setId("friendLinksPanel");
 		}
 		return friendLinksPanel;
-	}
-	
-	private IDataContainer getDataContainer() {
-		return dataContainer;
 	}
 }

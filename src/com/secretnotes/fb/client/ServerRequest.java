@@ -44,4 +44,12 @@ public class ServerRequest {
 	public void requestPhotos(String userId) {
 		secretNotes.requestPhotos(userId);
 	}
+	
+	public void requestAlbums(String userId) {
+		secretNotes.requestAlbums(userId);
+	}
+	
+	public void requestAlbumPhotos(String albumId) {
+		secretNotes.requestAlbumPhotos(albumId);
+	}
 }

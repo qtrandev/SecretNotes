@@ -42,7 +42,9 @@ public class NotesController implements ValueChangeHandler<String> {
 	private FlowPanel headerPanel;
 	private FlowPanel navPanel;
 	private FlowPanel homePanel;
+	private FriendsContainerPanel friendsContainerPanel;
 	private FriendsPanel friendsPanel;
+	private FriendProfilePanel friendProfilePanel;
 	private FlowPanel queryPanel;
 	private NotesPanel notesDisplay;
 	private HTML welcomeHtml;
@@ -89,6 +91,11 @@ public class NotesController implements ValueChangeHandler<String> {
 		
 		initHomePanel();
         initQueryPanel();
+        getFriendsContainerPanel().add(getFriendsPanel(), "Friends");
+        getFriendsContainerPanel().setHeight("600px");
+        getFriendsPanel().getElement().setId("friendsPanel");
+        getFriendsContainerPanel().add(getFriendProfilePanel(), "Photos");
+        getFriendProfilePanel().getElement().setId("friendProfilePanel");
         showHomePanel();
         
         callFacebook();
@@ -281,14 +288,36 @@ public class NotesController implements ValueChangeHandler<String> {
 		}
 	}
 	
-	public void requestPhotos(String id) {
+	public void requestPhotos(final String id) {
 		class PictureCallback extends Callback<JavaScriptObject> {
 			public void onSuccess(JavaScriptObject response) {
 				if (Util.LOG) GWT.log("Received photo request response. Showing photos.");
-				getFriendsPanel().processPhotosRequest(response);
+				getFriendsContainerPanel().selectTab(getFriendProfilePanel());
+				getFriendProfilePanel().setFriend(id);
+				getFriendProfilePanel().processPhotosRequest(response);
 			}
 		}
 		fbCore.api("/" +id+ "/photos", new PictureCallback());
+	}
+	
+	public void requestAlbums(String id) {
+		class AlbumCallback extends Callback<JavaScriptObject> {
+			public void onSuccess(JavaScriptObject response) {
+				if (Util.LOG) GWT.log("Received albums request response. Showing albums.");
+				getFriendProfilePanel().processAlbumsRequest(response);
+			}
+		}
+		fbCore.api("/" +id+ "/albums", new AlbumCallback());
+	}
+	
+	public void requestAlbumPhotos(String id) {
+		class PictureCallback extends Callback<JavaScriptObject> {
+			public void onSuccess(JavaScriptObject response) {
+				if (Util.LOG) GWT.log("Received albums request response. Showing albums.");
+				getFriendProfilePanel().processAlbumPhotosRequest(response);
+			}
+		}
+		fbCore.api("/" +id+ "/albums", new PictureCallback());
 	}
 
 	public void requestNotes(final String userId, NotesServiceAsync notesService) {
@@ -369,7 +398,8 @@ public class NotesController implements ValueChangeHandler<String> {
 	
 	private void showFriendsPanel() {
 		currentPage = Util.PAGE_FRIENDS;
-		getContentPanel().setWidget(getFriendsPanel());
+		getContentPanel().setWidget(getFriendsContainerPanel());
+		getFriendsContainerPanel().selectTab(getFriendsPanel());
 	}
 	
 	private void showQueryPanel() {
@@ -497,11 +527,25 @@ public class NotesController implements ValueChangeHandler<String> {
 		return homePanel;
 	}
 	
+	private FriendsContainerPanel getFriendsContainerPanel() {
+		if (friendsContainerPanel == null) {
+			friendsContainerPanel = new FriendsContainerPanel();
+		}
+		return friendsContainerPanel;
+	}
+	
 	private FriendsPanel getFriendsPanel() {
 		if (friendsPanel == null) {
 			friendsPanel = new FriendsPanel(getDataContainer());
 		}
 		return friendsPanel;
+	}
+	
+	private FriendProfilePanel getFriendProfilePanel() {
+		if (friendProfilePanel == null) {
+			friendProfilePanel = new FriendProfilePanel(getDataContainer());
+		}
+		return friendProfilePanel;
 	}
 	
 	private FlowPanel getQueryPanel() {
