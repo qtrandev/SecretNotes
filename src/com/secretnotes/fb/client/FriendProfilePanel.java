@@ -6,10 +6,12 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.secretnotes.fb.client.data.IDataContainer;
+import com.secretnotes.fb.client.ui.AlbumListPanel;
 
 public class FriendProfilePanel extends DataRequestPanel {
 	
 	private FlowPanel photosPanel;
+	private AlbumListPanel albumListPanel;
 	private User currentFriend = null;
 	
 	public FriendProfilePanel(IDataContainer dataContainer) {
@@ -34,10 +36,19 @@ public class FriendProfilePanel extends DataRequestPanel {
 		}
 	}
 	
+	public void addAlbum(Album album) {
+		getAlbumListPanel().addAlbum(album);
+	}
+	
+	private void layoutPanel() {
+		add(getPhotosPanel());
+		add(getAlbumListPanel());
+	}
+	
 	private void resetPanel() {
 		clear();
 		getPhotosPanel().clear();
-		add(getPhotosPanel());
+		layoutPanel();
 	}
 	
 	public void setFriend(String userId) {
@@ -49,5 +60,13 @@ public class FriendProfilePanel extends DataRequestPanel {
 			photosPanel = new FlowPanel();
 		}
 		return photosPanel;
+	}
+	
+	private AlbumListPanel getAlbumListPanel() {
+		if (albumListPanel == null) {
+			albumListPanel = new AlbumListPanel();
+			albumListPanel.getElement().setId("albumListPanel");
+		}
+		return albumListPanel;
 	}
 }

@@ -325,6 +325,7 @@ public class NotesController implements ValueChangeHandler<String> {
 			properties.put(Util.ALBUM_COVER_PHOTO_ID, albums.get(i).get(Util.ALBUM_COVER_PHOTO_ID));
 			album = new Album(properties);
 			getDataContainer().addAlbum(userId, album);
+			getFriendProfilePanel().addAlbum(album);
 			requestPhotoLink(album.getCoverPhotoId());
 		}
 	}
@@ -348,7 +349,7 @@ public class NotesController implements ValueChangeHandler<String> {
 		properties.put(Util.PHOTO_SOURCE, jso.get(Util.PHOTO_SOURCE));
 		Photo photo = new Photo(properties);
 		getDataContainer().addPhoto(photo);
-		getFriendProfilePanel().add(new HTML("<img src='"+photo.getPicture()+"'>"));
+		//getFriendProfilePanel().add(new HTML("<img src='"+photo.getPicture()+"'>"));
 	}
 
 	public void requestNotes(final String userId, NotesServiceAsync notesService) {
