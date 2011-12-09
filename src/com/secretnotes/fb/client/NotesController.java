@@ -19,6 +19,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.secretnotes.fb.client.data.IDataContainer;
@@ -295,19 +296,59 @@ public class NotesController implements ValueChangeHandler<String> {
 				getFriendsContainerPanel().selectTab(getFriendProfilePanel());
 				getFriendProfilePanel().setFriend(id);
 				getFriendProfilePanel().processPhotosRequest(response);
+				requestAlbums(id);
 			}
 		}
 		fbCore.api("/" +id+ "/photos", new PictureCallback());
 	}
 	
-	public void requestAlbums(String id) {
+	public void requestAlbums(final String id) {
 		class AlbumCallback extends Callback<JavaScriptObject> {
 			public void onSuccess(JavaScriptObject response) {
 				if (Util.LOG) GWT.log("Received albums request response. Showing albums.");
-				getFriendProfilePanel().processAlbumsRequest(response);
+				processAlbumsRequest(id, response);
 			}
 		}
 		fbCore.api("/" +id+ "/albums", new AlbumCallback());
+	}
+	
+	public void processAlbumsRequest(String userId, JavaScriptObject response) {
+		JSOModel jso = response.cast();
+		JsArray<JSOModel> albums = jso.getArray(Util.ARRAY_DATA);
+		Album album;
+		HashMap<String,String> properties;
+		for (int i=0; i<albums.length(); i++) {
+			properties = new HashMap<String, String>();
+			properties.put(Util.ALBUM_ID, albums.get(i).get(Util.ALBUM_ID));
+			properties.put(Util.ALBUM_NAME, albums.get(i).get(Util.ALBUM_NAME));
+			properties.put(Util.ALBUM_COUNT, albums.get(i).get(Util.ALBUM_COUNT));
+			properties.put(Util.ALBUM_COVER_PHOTO_ID, albums.get(i).get(Util.ALBUM_COVER_PHOTO_ID));
+			album = new Album(properties);
+			getDataContainer().addAlbum(userId, album);
+			requestPhotoLink(album.getCoverPhotoId());
+		}
+	}
+	
+	public void requestPhotoLink(String photoId) {
+		class PhotoLinkCallback extends Callback<JavaScriptObject> {
+			public void onSuccess(JavaScriptObject response) {
+				if (Util.LOG) GWT.log("Received photo link request response. Processing photo link.");
+				processPhotoLink(response);
+			}
+		}
+		fbCore.api("/"+photoId, new PhotoLinkCallback());
+	}
+	
+	public void processPhotoLink(JavaScriptObject response) {
+		JSOModel jso = response.cast();
+		
+		HashMap<String,String> properties = new HashMap<String, String>();
+		properties.put(Util.PHOTO_ID, jso.get(Util.PHOTO_ID));
+		properties.put(Util.PHOTO_PICTURE, jso.get(Util.PHOTO_PICTURE));
+		properties.put(Util.PHOTO_SOURCE, jso.get(Util.PHOTO_SOURCE));
+		Photo photo = new Photo(properties);
+		getDataContainer().addPhoto(photo);
+		getFriendProfilePanel().add(new HTML("<img src='"+photo.getPicture()+"'>"));
 	}
 	
 	public void requestAlbumPhotos(String id) {

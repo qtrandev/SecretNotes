@@ -46,6 +46,10 @@ public class Util {
 	public static final String PHOTO_CREATED_TIME = "created_time"; //ex: 2011-09-19T18:48:47+0000
 	public static final String PHOTO_POSITION = "position"; //ex: 1
 	public static final String PHOTO_UPDATED_TIME = "updated_time"; //ex: 2011-09-19T18:48:48+0000
+	public static final String ALBUM_ID = "id";
+	public static final String ALBUM_NAME = "name";
+	public static final String ALBUM_COUNT = "count";
+	public static final String ALBUM_COVER_PHOTO_ID = "cover_photo";
 	
 	public static final String ARRAY_DATA = "data";
 	public static final String PHOTO_COMMENTS = "comments"; //array

@@ -35,21 +35,6 @@ public class FriendProfilePanel extends DataRequestPanel {
 		}
 	}
 	
-	public void processAlbumsRequest(JavaScriptObject response) {
-		JSOModel jso = response.cast();
-		JsArray<JSOModel> albums = jso.getArray(Util.ARRAY_DATA);
-		getPhotosPanel().add(new HTML("Albums found: "+albums.length()));
-		Label label;
-		String pictureId,link;
-		for (int i=0; i<albums.length(); i++) {
-			pictureId = albums.get(i).get("cover_photo");
-			link = "http://graph.facebook.com/" + pictureId + "/picture?type=normal";
-			label = new Label();
-			label.getElement().setInnerHTML("<img src='"+link+"'/>");
-			getPhotosPanel().add(label);
-		}
-	}
-	
 	public void processAlbumPhotosRequest(JavaScriptObject response) {
 		JSOModel jso = response.cast();
 		JsArray<JSOModel> photos = jso.getArray(Util.ARRAY_DATA);

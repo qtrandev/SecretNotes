@@ -52,4 +52,8 @@ public class ServerRequest {
 	public void requestAlbumPhotos(String albumId) {
 		secretNotes.requestAlbumPhotos(albumId);
 	}
+	
+	public void requestPhotoLink(String photoId) {
+		secretNotes.requestPhotoLink(photoId);
+	}
 }
