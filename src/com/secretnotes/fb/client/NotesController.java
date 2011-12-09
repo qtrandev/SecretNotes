@@ -350,16 +350,6 @@ public class NotesController implements ValueChangeHandler<String> {
 		getDataContainer().addPhoto(photo);
 		getFriendProfilePanel().add(new HTML("<img src='"+photo.getPicture()+"'>"));
 	}
-	
-	public void requestAlbumPhotos(String id) {
-		class PictureCallback extends Callback<JavaScriptObject> {
-			public void onSuccess(JavaScriptObject response) {
-				if (Util.LOG) GWT.log("Received albums request response. Showing albums.");
-				getFriendProfilePanel().processAlbumPhotosRequest(response);
-			}
-		}
-		fbCore.api("/" +id+ "/albums", new PictureCallback());
-	}
 
 	public void requestNotes(final String userId, NotesServiceAsync notesService) {
 		if (Util.LOG) GWT.log("requestNotes called for "+getDataContainer().getNameList().get(userId)+" ("+userId+").");

@@ -5,7 +5,6 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
 import com.secretnotes.fb.client.data.IDataContainer;
 
 public class FriendProfilePanel extends DataRequestPanel {
@@ -33,11 +32,6 @@ public class FriendProfilePanel extends DataRequestPanel {
 			anchor.getElement().setInnerHTML("<img src='"+picture+"'/>");
 			getPhotosPanel().add(anchor);
 		}
-	}
-	
-	public void processAlbumPhotosRequest(JavaScriptObject response) {
-		JSOModel jso = response.cast();
-		JsArray<JSOModel> photos = jso.getArray(Util.ARRAY_DATA);
 	}
 	
 	private void resetPanel() {
