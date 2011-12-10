@@ -4,6 +4,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
+import com.secretnotes.fb.client.Album;
 import com.secretnotes.fb.client.Photo;
 
 public class AlbumPhotoPanel extends FlowPanel {
@@ -11,17 +12,18 @@ public class AlbumPhotoPanel extends FlowPanel {
 	private ClickHandler clickHandler;
 	private HTML photoLabel;
 	private Label titleLabel;
+	private Album album;
 
-	public AlbumPhotoPanel() {
+	public AlbumPhotoPanel(Album album) {
 		super();
+		this.album = album;
 		titleLabel = new Label();
 		add(titleLabel);
 		setStyleName("album_photo_panel");
 	}
 	
-	public void displayPhoto(Photo photo) {
+	public void refreshPhotos(Photo photo) {
 		resetPanel();
-		titleLabel = new Label();
 		photoLabel = new HTML("<img src='"+photo.getPicture()+"'>");
 		photoLabel.addClickHandler(clickHandler);
 		add(titleLabel);
@@ -38,5 +40,9 @@ public class AlbumPhotoPanel extends FlowPanel {
 	
 	public void setTitleLabel(String text) {
 		titleLabel.setText(text);
+	}
+	
+	public Album getAlbum() {
+		return album;
 	}
 }

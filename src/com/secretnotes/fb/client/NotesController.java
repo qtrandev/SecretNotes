@@ -95,7 +95,7 @@ public class NotesController implements ValueChangeHandler<String> {
         getFriendsContainerPanel().add(getFriendsPanel(), "Friends");
         getFriendsContainerPanel().setHeight("600px");
         getFriendsPanel().getElement().setId("friendsPanel");
-        getFriendsContainerPanel().add(getFriendProfilePanel(), "Photos");
+        getFriendsContainerPanel().add(getFriendProfilePanel(), getFriendProfilePanel().getDisplayTitle());
         getFriendProfilePanel().getElement().setId("friendProfilePanel");
         showHomePanel();
         
@@ -347,8 +347,11 @@ public class NotesController implements ValueChangeHandler<String> {
 		properties.put(Util.PHOTO_ID, jso.get(Util.PHOTO_ID));
 		properties.put(Util.PHOTO_PICTURE, jso.get(Util.PHOTO_PICTURE));
 		properties.put(Util.PHOTO_SOURCE, jso.get(Util.PHOTO_SOURCE));
+		
+		
 		Photo photo = new Photo(properties);
 		getDataContainer().addPhoto(photo);
+		getFriendProfilePanel().refreshPhotos(photo);
 		//getFriendProfilePanel().add(new HTML("<img src='"+photo.getPicture()+"'>"));
 	}
 

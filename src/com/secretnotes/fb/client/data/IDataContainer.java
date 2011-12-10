@@ -18,4 +18,5 @@ public interface IDataContainer {
 	public void addFriend(User friend);
 	public void addAlbum(String userId, Album album);
 	public void addPhoto(Photo photo);
+	public Photo getPhoto(String photoId);
 }

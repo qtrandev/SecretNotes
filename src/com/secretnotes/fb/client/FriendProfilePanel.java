@@ -1,7 +1,10 @@
 package com.secretnotes.fb.client;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -13,6 +16,7 @@ public class FriendProfilePanel extends DataRequestPanel {
 	private FlowPanel photosPanel;
 	private AlbumListPanel albumListPanel;
 	private User currentFriend = null;
+	private String title = "Photos";
 	
 	public FriendProfilePanel(IDataContainer dataContainer) {
 		super(dataContainer);
@@ -37,7 +41,16 @@ public class FriendProfilePanel extends DataRequestPanel {
 	}
 	
 	public void addAlbum(Album album) {
-		getAlbumListPanel().addAlbum(album);
+		ClickHandler clickHandler = new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				GWT.log("CLICKED");
+			}
+		};
+		getAlbumListPanel().addAlbum(album, clickHandler);
+	}
+	
+	public void refreshPhotos(Photo photo) {
+		getAlbumListPanel().refreshPhotos(photo);
 	}
 	
 	private void layoutPanel() {
@@ -68,5 +81,9 @@ public class FriendProfilePanel extends DataRequestPanel {
 			albumListPanel.getElement().setId("albumListPanel");
 		}
 		return albumListPanel;
+	}
+	
+	public String getDisplayTitle() {
+		return title;
 	}
 }
