@@ -354,6 +354,36 @@ public class NotesController implements ValueChangeHandler<String> {
 		getFriendProfilePanel().refreshPhotos(photo);
 		//getFriendProfilePanel().add(new HTML("<img src='"+photo.getPicture()+"'>"));
 	}
+	
+	public void requestAlbumPhotos(final String albumId) {
+		class AlbumPhotosCallback extends Callback<JavaScriptObject> {
+			public void onSuccess(JavaScriptObject response) {
+				if (Util.LOG) GWT.log("Received albums request response. Showing albums.");
+				processAlbumPhotosRequest(albumId, response);
+			}
+		}
+		fbCore.api("/" +albumId+ "/photos", new AlbumPhotosCallback());
+	}
+	
+	public void processAlbumPhotosRequest(String albumId, JavaScriptObject response) {
+		JSOModel jso = response.cast();
+		JsArray<JSOModel> albums = jso.getArray(Util.ARRAY_DATA);
+
+		Photo photo;
+		HashMap<String, String> properties;
+		ArrayList<Photo> photos = new ArrayList<Photo>();
+		for (int i=0; i<albums.length(); i++) {
+			properties = new HashMap<String, String>();
+			properties.put(Util.PHOTO_ID, albums.get(i).get(Util.PHOTO_ID));
+			properties.put(Util.PHOTO_PICTURE, albums.get(i).get(Util.PHOTO_PICTURE));
+			properties.put(Util.PHOTO_SOURCE, albums.get(i).get(Util.PHOTO_SOURCE));
+			
+			photo = new Photo(properties);
+			getDataContainer().addPhoto(photo);
+			photos.add(photo);
+		}
+		getFriendProfilePanel().addAlbumPhotos(albumId, photos);
+	}
 
 	public void requestNotes(final String userId, NotesServiceAsync notesService) {
 		if (Util.LOG) GWT.log("requestNotes called for "+getDataContainer().getNameList().get(userId)+" ("+userId+").");

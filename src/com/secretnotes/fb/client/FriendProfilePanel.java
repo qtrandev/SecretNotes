@@ -1,6 +1,7 @@
 package com.secretnotes.fb.client;
 
-import com.google.gwt.core.client.GWT;
+import java.util.ArrayList;
+
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -10,6 +11,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.secretnotes.fb.client.data.IDataContainer;
 import com.secretnotes.fb.client.ui.AlbumListPanel;
+import com.secretnotes.fb.client.ui.PhotoListPanel;
 
 public class FriendProfilePanel extends DataRequestPanel {
 	
@@ -26,6 +28,11 @@ public class FriendProfilePanel extends DataRequestPanel {
 	public void processPhotosRequest(JavaScriptObject response) {
 		JSOModel jso = response.cast();
 		JsArray<JSOModel> photos = jso.getArray(Util.ARRAY_DATA);
+		getPhotosPanel().clear();
+		getAlbumListPanel().clear();
+		clear();
+		add(getPhotosPanel());
+		add(getAlbumListPanel());
 		getPhotosPanel().add(new HTML("<h2>"+currentFriend.getName()+"</h2>"));
 		getPhotosPanel().add(new HTML("Photos uploaded: "+photos.length()));
 		Anchor anchor;
@@ -40,10 +47,10 @@ public class FriendProfilePanel extends DataRequestPanel {
 		}
 	}
 	
-	public void addAlbum(Album album) {
+	public void addAlbum(final Album album) {
 		ClickHandler clickHandler = new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				GWT.log("CLICKED");
+				getServer().requestAlbumPhotos(album.getId());
 			}
 		};
 		getAlbumListPanel().addAlbum(album, clickHandler);
@@ -51,6 +58,15 @@ public class FriendProfilePanel extends DataRequestPanel {
 	
 	public void refreshPhotos(Photo photo) {
 		getAlbumListPanel().refreshPhotos(photo);
+	}
+	
+	public void addAlbumPhotos(String albumId, ArrayList<Photo> photos) {
+		Album album = getAlbumListPanel().getAlbum(albumId);
+		PhotoListPanel photoListPanel = new PhotoListPanel();
+		photoListPanel.setStyleName("photoListPanel");
+		photoListPanel.setDisplayTitle(album.getName());
+		photoListPanel.displayPhotos(photos);
+		add(photoListPanel);
 	}
 	
 	private void layoutPanel() {

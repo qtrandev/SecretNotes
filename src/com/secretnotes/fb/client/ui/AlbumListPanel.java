@@ -67,4 +67,13 @@ public class AlbumListPanel extends FlowPanel {
 	public ArrayList<AlbumPhotoPanel> getAlbumPhotoPanels() {
 		return albumPhotoPanels;
 	}
+	
+	public Album getAlbum(String albumId) {
+		for (AlbumPhotoPanel albumPhotoPanel : getAlbumPhotoPanels()) {
+			if (albumPhotoPanel.getAlbum().getId().equals(albumId)) {
+				return albumPhotoPanel.getAlbum();
+			}
+		}
+		return null;
+	}
 }

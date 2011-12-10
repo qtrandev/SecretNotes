@@ -1,18 +1,23 @@
 package com.secretnotes.fb.client.ui;
 
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.secretnotes.fb.client.Photo;
 
 public class PhotoPanel extends FlowPanel {
 
 	public PhotoPanel() {
 		super();
+		setStyleName("photoPanel");
 	}
 	
 	public void displayPhoto(Photo photo) {
 		resetPanel();
-		add(new HTML("<img src='"+photo.getPicture()+"'>"));
+		Anchor anchor = new Anchor();
+		anchor.setTarget("_blank");
+		anchor.setHref(photo.getSource());
+		anchor.getElement().setInnerHTML("<img src='"+photo.getPicture()+"'/>");
+		add(anchor);
 	}
 	
 	private void resetPanel() {
