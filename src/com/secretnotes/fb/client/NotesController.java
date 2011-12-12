@@ -293,6 +293,8 @@ public class NotesController implements ValueChangeHandler<String> {
 		class PictureCallback extends Callback<JavaScriptObject> {
 			public void onSuccess(JavaScriptObject response) {
 				if (Util.LOG) GWT.log("Received photo request response. Showing photos.");
+				int tabIndex = getFriendsContainerPanel().getWidgetIndex(getFriendProfilePanel());
+				getFriendsContainerPanel().setTabText(tabIndex, getDataContainer().getFriendFromList(id).getName());
 				getFriendsContainerPanel().selectTab(getFriendProfilePanel());
 				getFriendProfilePanel().setFriend(id);
 				getFriendProfilePanel().processPhotosRequest(response);
