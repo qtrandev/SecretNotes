@@ -12,14 +12,17 @@ public class PhotoListPanel extends FlowPanel {
 
 	public PhotoListPanel() {
 		super();
-		titleLabel = new Label();
-		titleLabel.setStyleName("photoAlbumTitle");
+		init();
+		resetPanel();
+	}
+	
+	private void init() {
 		setStyleName("photoListPanel");
+		getTitleLabel();
 	}
 	
 	public void displayPhotos(ArrayList<Photo> photos) {
 		resetPanel();
-		add(titleLabel);
 		PhotoPanel photoPanel;
 		for (Photo photo : photos) {
 			photoPanel = new PhotoPanel();
@@ -28,11 +31,16 @@ public class PhotoListPanel extends FlowPanel {
 		}
 	}
 	
-	private void resetPanel() {
+	public void resetPanel() {
 		clear();
+		add(getTitleLabel());
 	}
 	
 	private Label getTitleLabel() {
+		if (titleLabel == null) {
+			titleLabel = new Label();
+			titleLabel.setStyleName("photoAlbumTitle");
+		}
 		return titleLabel;
 	}
 	
