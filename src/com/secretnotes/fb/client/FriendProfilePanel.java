@@ -36,11 +36,7 @@ public class FriendProfilePanel extends DataRequestPanel {
 	public void processPhotosRequest(JavaScriptObject response) {
 		JSOModel jso = response.cast();
 		JsArray<JSOModel> photos = jso.getArray(Util.ARRAY_DATA);
-		getPhotosPanel().clear();
-		getAlbumListPanel().clear();
-		clear();
-		add(getPhotosPanel());
-		add(getAlbumListPanel());
+		resetPanel();
 		getPhotosPanel().add(new HTML("<h2>"+currentFriend.getName()+"</h2>"));
 		getPhotosPanel().add(new HTML("Photos uploaded: "+photos.length()));
 		Anchor anchor;
