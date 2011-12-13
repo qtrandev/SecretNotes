@@ -17,8 +17,12 @@ public class AlbumPhotoPanel extends FlowPanel {
 	public AlbumPhotoPanel(Album album) {
 		super();
 		this.album = album;
+		init();
+		resetPanel();
+	}
+	
+	private void init() {
 		titleLabel = new Label();
-		add(titleLabel);
 		setStyleName("album_photo_panel");
 	}
 	
@@ -26,12 +30,12 @@ public class AlbumPhotoPanel extends FlowPanel {
 		resetPanel();
 		photoLabel = new HTML("<img src='"+photo.getPicture()+"'>");
 		photoLabel.addClickHandler(clickHandler);
-		add(titleLabel);
 		add(photoLabel);
 	}
 	
-	private void resetPanel() {
+	public void resetPanel() {
 		clear();
+		add(titleLabel);
 	}
 	
 	public void setClickHandler(ClickHandler clickHandler) {
