@@ -22,20 +22,21 @@ public class AlbumPhotoPanel extends FlowPanel {
 	}
 	
 	private void init() {
-		titleLabel = new Label();
 		setStyleName("album_photo_panel");
+		titleLabel = new Label();
+		photoLabel = new HTML();
 	}
 	
 	public void refreshPhotos(Photo photo) {
-		resetPanel();
 		photoLabel = new HTML("<img src='"+photo.getPicture()+"'>");
 		photoLabel.addClickHandler(clickHandler);
-		add(photoLabel);
+		resetPanel();
 	}
 	
 	public void resetPanel() {
 		clear();
 		add(titleLabel);
+		add(photoLabel);
 	}
 	
 	public void setClickHandler(ClickHandler clickHandler) {
