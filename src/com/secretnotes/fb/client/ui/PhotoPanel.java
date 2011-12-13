@@ -8,6 +8,11 @@ public class PhotoPanel extends FlowPanel {
 
 	public PhotoPanel() {
 		super();
+		init();
+		resetPanel();
+	}
+	
+	private void init() {
 		setStyleName("photoPanel");
 	}
 	
@@ -20,7 +25,7 @@ public class PhotoPanel extends FlowPanel {
 		add(anchor);
 	}
 	
-	private void resetPanel() {
+	public void resetPanel() {
 		clear();
 	}
 }
