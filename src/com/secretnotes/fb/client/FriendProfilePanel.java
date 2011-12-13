@@ -15,14 +15,22 @@ import com.secretnotes.fb.client.ui.PhotoListPanel;
 
 public class FriendProfilePanel extends DataRequestPanel {
 	
-	private FlowPanel photosPanel;
+	private String title;
 	private AlbumListPanel albumListPanel;
-	private User currentFriend = null;
-	private String title = "Photos";
+	private FlowPanel photosPanel;
+	private User currentFriend;
 	
 	public FriendProfilePanel(IDataContainer dataContainer) {
 		super(dataContainer);
+		init();
 		resetPanel();
+	}
+	
+	private void init() {
+		title = "Photos";
+		getAlbumListPanel();
+		getPhotosPanel();
+		currentFriend = null;
 	}
 	
 	public void processPhotosRequest(JavaScriptObject response) {
@@ -69,15 +77,12 @@ public class FriendProfilePanel extends DataRequestPanel {
 		add(photoListPanel);
 	}
 	
-	private void layoutPanel() {
-		add(getPhotosPanel());
-		add(getAlbumListPanel());
-	}
-	
-	private void resetPanel() {
+	public void resetPanel() {
 		clear();
 		getPhotosPanel().clear();
-		layoutPanel();
+		add(getPhotosPanel());
+		getAlbumListPanel().resetPanel();
+		add(getAlbumListPanel());
 	}
 	
 	public void setFriend(String userId) {
