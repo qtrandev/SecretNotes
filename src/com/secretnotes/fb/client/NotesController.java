@@ -297,11 +297,28 @@ public class NotesController implements ValueChangeHandler<String> {
 				getFriendsContainerPanel().setTabText(tabIndex, getDataContainer().getFriendFromList(id).getName());
 				getFriendsContainerPanel().selectTab(getFriendProfilePanel());
 				getFriendProfilePanel().setFriend(id);
-				getFriendProfilePanel().processPhotosRequest(response);
+				processPhotosRequest(response);
 				requestAlbums(id);
 			}
 		}
 		fbCore.api("/" +id+ "/photos", new PictureCallback());
+	}
+	
+	private void processPhotosRequest(JavaScriptObject response) {
+		JSOModel jso = response.cast();
+		JsArray<JSOModel> photos = jso.getArray(Util.ARRAY_DATA);
+		Photo photo;
+		HashMap<String,String> properties;
+		ArrayList<Photo> photoList = new ArrayList<Photo>();
+		for (int i=0; i<photos.length(); i++) {
+			properties = new HashMap<String, String>();
+			properties.put(Util.PHOTO_ID, photos.get(i).get(Util.PHOTO_ID));
+			properties.put(Util.PHOTO_PICTURE, photos.get(i).get(Util.PHOTO_PICTURE));
+			properties.put(Util.PHOTO_SOURCE, photos.get(i).get(Util.PHOTO_SOURCE));
+			photo = new Photo(properties);
+			photoList.add(photo);
+		}
+		getFriendProfilePanel().processUploadedPhotos(photoList);
 	}
 	
 	public void requestAlbums(final String id) {

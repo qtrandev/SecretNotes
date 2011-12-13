@@ -9,6 +9,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
 import com.secretnotes.fb.client.data.IDataContainer;
 import com.secretnotes.fb.client.ui.AlbumListPanel;
 import com.secretnotes.fb.client.ui.PhotoListPanel;
@@ -17,8 +18,9 @@ public class FriendProfilePanel extends DataRequestPanel {
 	
 	private String title;
 	private AlbumListPanel albumListPanel;
-	private FlowPanel photosPanel;
+	private PhotoListPanel photosPanel;
 	private User currentFriend;
+	private Label friendNameLabel;
 	
 	public FriendProfilePanel(IDataContainer dataContainer) {
 		super(dataContainer);
@@ -28,27 +30,16 @@ public class FriendProfilePanel extends DataRequestPanel {
 	
 	private void init() {
 		title = "Photos";
+		getFriendNameLabel();
 		getAlbumListPanel();
 		getPhotosPanel();
 		currentFriend = null;
 	}
 	
-	public void processPhotosRequest(JavaScriptObject response) {
-		JSOModel jso = response.cast();
-		JsArray<JSOModel> photos = jso.getArray(Util.ARRAY_DATA);
+	public void processUploadedPhotos(ArrayList<Photo> photos) {
 		resetPanel();
-		getPhotosPanel().add(new HTML("<h2>"+currentFriend.getName()+"</h2>"));
-		getPhotosPanel().add(new HTML("Photos uploaded: "+photos.length()));
-		Anchor anchor;
-		String picture;
-		for (int i=0; i<photos.length(); i++) {
-			picture = photos.get(i).get(Util.PHOTO_PICTURE);
-			anchor = new Anchor();
-			anchor.setTarget("_blank");
-			anchor.setHref(photos.get(i).get(Util.PHOTO_SOURCE));
-			anchor.getElement().setInnerHTML("<img src='"+picture+"'/>");
-			getPhotosPanel().add(anchor);
-		}
+		getFriendNameLabel().setText(currentFriend.getName());
+		getPhotosPanel().displayPhotos(photos);
 	}
 	
 	public void addAlbum(final Album album) {
@@ -75,7 +66,8 @@ public class FriendProfilePanel extends DataRequestPanel {
 	
 	public void resetPanel() {
 		clear();
-		getPhotosPanel().clear();
+		add(getFriendNameLabel());
+		getPhotosPanel().resetPanel();
 		add(getPhotosPanel());
 		getAlbumListPanel().resetPanel();
 		add(getAlbumListPanel());
@@ -85,9 +77,11 @@ public class FriendProfilePanel extends DataRequestPanel {
 		currentFriend = getDataContainer().getFriendFromList(userId);
 	}
 	
-	private FlowPanel getPhotosPanel() {
+	private PhotoListPanel getPhotosPanel() {
 		if (photosPanel == null) {
-			photosPanel = new FlowPanel();
+			photosPanel = new PhotoListPanel();
+			photosPanel.setStyleName("photoListPanel");
+			photosPanel.setDisplayTitle("Uploaded Photos");
 		}
 		return photosPanel;
 	}
@@ -102,5 +96,13 @@ public class FriendProfilePanel extends DataRequestPanel {
 	
 	public String getDisplayTitle() {
 		return title;
+	}
+	
+	private Label getFriendNameLabel() {
+		if (friendNameLabel == null) {
+			friendNameLabel = new Label();
+			friendNameLabel.setStyleName("friendNameLabel");
+		}
+		return friendNameLabel;
 	}
 }

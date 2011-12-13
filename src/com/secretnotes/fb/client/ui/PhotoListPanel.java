@@ -9,6 +9,7 @@ import com.secretnotes.fb.client.Photo;
 public class PhotoListPanel extends FlowPanel {
 	
 	private Label titleLabel;
+	private Label photoCountLabel;
 
 	public PhotoListPanel() {
 		super();
@@ -19,10 +20,12 @@ public class PhotoListPanel extends FlowPanel {
 	private void init() {
 		setStyleName("photoListPanel");
 		getTitleLabel();
+		getPhotoCountLabel();
 	}
 	
 	public void displayPhotos(ArrayList<Photo> photos) {
 		resetPanel();
+		getPhotoCountLabel().setText("Photos: "+photos.size());
 		PhotoPanel photoPanel;
 		for (Photo photo : photos) {
 			photoPanel = new PhotoPanel();
@@ -34,14 +37,23 @@ public class PhotoListPanel extends FlowPanel {
 	public void resetPanel() {
 		clear();
 		add(getTitleLabel());
+		add(getPhotoCountLabel());
 	}
 	
 	private Label getTitleLabel() {
 		if (titleLabel == null) {
 			titleLabel = new Label();
-			titleLabel.setStyleName("photoAlbumTitle");
+			titleLabel.setStyleName("photoListTitle");
 		}
 		return titleLabel;
+	}
+	
+	private Label getPhotoCountLabel() {
+		if (photoCountLabel == null) {
+			photoCountLabel = new Label();
+			photoCountLabel.setStyleName("photoListCount");
+		}
+		return photoCountLabel;
 	}
 	
 	public void setDisplayTitle(String text) {

@@ -11,6 +11,8 @@ import com.secretnotes.fb.client.Photo;
 public class AlbumListPanel extends FlowPanel {
 	
 	private Label titleLabel;
+	private Label albumCountLabel;
+	private int albumCount;
 	private ArrayList<AlbumPhotoPanel> albumPhotoPanels;
 
 	public AlbumListPanel() {
@@ -20,8 +22,9 @@ public class AlbumListPanel extends FlowPanel {
 	}
 	
 	private void init() {
-		titleLabel = new Label("Albums");
-		titleLabel.setStyleName("albumTitle");
+		getTitleLabel();
+		getAlbumCountLabel();
+		albumCount = 0;
 		getAlbumPhotoPanels();
 	}
 	
@@ -32,6 +35,8 @@ public class AlbumListPanel extends FlowPanel {
 		albumPhotoPanel.setTitleLabel(album.getName());
 		getAlbumPhotoPanels().add(albumPhotoPanel);
 		add(albumPhotoPanel);
+		albumCount++;
+		setAlbumCountDisplay(albumCount);
 	}
 	
 	public void refreshPhotos(Photo photo) {
@@ -45,12 +50,26 @@ public class AlbumListPanel extends FlowPanel {
 	
 	public void resetPanel() {
 		clear();
+		albumCount = 0;
+		setAlbumCountDisplay(albumCount);
 		add(getTitleLabel());
+		add(getAlbumCountLabel());
 		getAlbumPhotoPanels().clear();
 	}
 	
 	private Label getTitleLabel() {
+		if (titleLabel == null) {
+			titleLabel = new Label("Albums");
+			titleLabel.setStyleName("albumTitle");
+		}
 		return titleLabel;
+	}
+	
+	private Label getAlbumCountLabel() {
+		if (albumCountLabel == null) {
+			albumCountLabel = new Label();
+		}
+		return albumCountLabel;
 	}
 
 	public ArrayList<AlbumPhotoPanel> getAlbumPhotoPanels() {
@@ -67,5 +86,9 @@ public class AlbumListPanel extends FlowPanel {
 			}
 		}
 		return null;
+	}
+	
+	private void setAlbumCountDisplay(int count) {
+		getAlbumCountLabel().setText("Number of albums: "+count);
 	}
 }
