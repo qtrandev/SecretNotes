@@ -146,7 +146,7 @@ public class NotesController implements ValueChangeHandler<String> {
 		// Get notified when user session is changed
 		//
 		SessionChangeCallback sessionChangeCallback = new SessionChangeCallback();
-		fbEvent.subscribe("auth.sessionChange", sessionChangeCallback);
+		fbEvent.subscribe("auth.authResponseChange", sessionChangeCallback);
 
 		// Callback used when checking login status
 		class LoginStatusCallback extends Callback<JavaScriptObject> {
@@ -570,7 +570,7 @@ public class NotesController implements ValueChangeHandler<String> {
 			loadingPanel.add(loadingGif);
 			
 			HTMLPanel fbButton = new HTMLPanel("<fb:login-button autologoutlink='true' "+
-					"perms='publish_stream,read_stream,user_photos,friends_photos'></fb:login-button>");
+					"scope='publish_stream,read_stream,user_photos,friends_photos'></fb:login-button>");
 			fbButton.getElement().setId("fbButton");
 			fbPanel.add(loadingPanel);
 			fbPanel.add(fbButton);

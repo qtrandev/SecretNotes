@@ -19,7 +19,8 @@ public class FBCore {
 			'appId': appId, 
 			'status': status,
 			'cookie': cookie,
-			'xfbml' : xfbml
+			'xfbml' : xfbml,
+			'oauth' : true
 		});
 	}-*/;
 	
