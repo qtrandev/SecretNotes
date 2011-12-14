@@ -45,7 +45,7 @@ public class NotesController implements ValueChangeHandler<String> {
 	private FlowPanel homePanel;
 	private FriendsContainerPanel friendsContainerPanel;
 	private FriendsPanel friendsPanel;
-	private FriendProfilePanel friendProfilePanel;
+	private FriendPhotosPanel friendProfilePanel;
 	private FlowPanel queryPanel;
 	private NotesPanel notesDisplay;
 	private HTML welcomeHtml;
@@ -625,9 +625,9 @@ public class NotesController implements ValueChangeHandler<String> {
 		return friendsPanel;
 	}
 	
-	private FriendProfilePanel getFriendProfilePanel() {
+	private FriendPhotosPanel getFriendProfilePanel() {
 		if (friendProfilePanel == null) {
-			friendProfilePanel = new FriendProfilePanel(getDataContainer());
+			friendProfilePanel = new FriendPhotosPanel(getDataContainer());
 		}
 		return friendProfilePanel;
 	}

@@ -2,19 +2,14 @@ package com.secretnotes.fb.client;
 
 import java.util.ArrayList;
 
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.secretnotes.fb.client.data.IDataContainer;
 import com.secretnotes.fb.client.ui.AlbumListPanel;
 import com.secretnotes.fb.client.ui.PhotoListPanel;
 
-public class FriendProfilePanel extends DataRequestPanel {
+public class FriendPhotosPanel extends DataRequestPanel {
 	
 	private String title;
 	private AlbumListPanel albumListPanel;
@@ -22,7 +17,7 @@ public class FriendProfilePanel extends DataRequestPanel {
 	private User currentFriend;
 	private Label friendNameLabel;
 	
-	public FriendProfilePanel(IDataContainer dataContainer) {
+	public FriendPhotosPanel(IDataContainer dataContainer) {
 		super(dataContainer);
 		init();
 		resetPanel();
