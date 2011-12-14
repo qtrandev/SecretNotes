@@ -1,6 +1,8 @@
-package com.secretnotes.fb.client;
+package com.secretnotes.fb.client.data;
 
 import java.util.HashMap;
+
+import com.secretnotes.fb.client.Util;
 
 public class Photo extends DataHolder {
 

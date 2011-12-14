@@ -1,7 +1,5 @@
 package com.secretnotes.fb.client.data;
 
-import com.secretnotes.fb.client.PhotoManager;
-import com.secretnotes.fb.client.User;
 
 public class PhotoOwnership {
 	

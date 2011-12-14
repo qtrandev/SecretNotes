@@ -12,6 +12,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.secretnotes.fb.client.data.IDataContainer;
+import com.secretnotes.fb.client.data.User;
 
 public class NotesPanel extends Composite {
 	

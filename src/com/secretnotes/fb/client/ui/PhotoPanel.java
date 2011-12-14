@@ -2,7 +2,7 @@ package com.secretnotes.fb.client.ui;
 
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.secretnotes.fb.client.Photo;
+import com.secretnotes.fb.client.data.Photo;
 
 public class PhotoPanel extends FlowPanel {
 

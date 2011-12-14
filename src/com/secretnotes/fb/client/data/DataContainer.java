@@ -3,9 +3,6 @@ package com.secretnotes.fb.client.data;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.secretnotes.fb.client.Album;
-import com.secretnotes.fb.client.Photo;
-import com.secretnotes.fb.client.User;
 
 public class DataContainer implements IDataContainer {
 	

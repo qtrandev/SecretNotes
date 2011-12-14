@@ -1,4 +1,4 @@
-package com.secretnotes.fb.client;
+package com.secretnotes.fb.client.data;
 
 
 public class User {

@@ -1,6 +1,7 @@
-package com.secretnotes.fb.client;
+package com.secretnotes.fb.client.data;
 
 import java.util.ArrayList;
+
 
 public class PhotoManager {
 	

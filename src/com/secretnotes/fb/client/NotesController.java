@@ -22,7 +22,10 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.secretnotes.fb.client.data.Album;
 import com.secretnotes.fb.client.data.IDataContainer;
+import com.secretnotes.fb.client.data.Photo;
+import com.secretnotes.fb.client.data.User;
 
 /** Main execution class 
  * @author Quyen Tran
