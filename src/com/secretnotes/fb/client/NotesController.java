@@ -19,7 +19,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.secretnotes.fb.client.data.Album;
@@ -33,12 +32,7 @@ import com.secretnotes.fb.client.data.User;
 public class NotesController implements ValueChangeHandler<String> {
 
 	// Facebook-related initialization
-	private String APP_ID = "259802324063697"; // GOOGLE APP ENGINE TESTING - CHANGE 2 USES OF THIS FOR YOUR APP!
-	private FBCore fbCore = GWT.create(FBCore.class);
-	private FBEvent fbEvent = GWT.create(FBEvent.class);
-	private boolean status = true;
-	private boolean xfbml = true;
-	private boolean cookie = true;
+	private ICommunicationHandler commHandler;
 	
 	// UI components
 	private FlowPanel mainPanel;
@@ -60,24 +54,21 @@ public class NotesController implements ValueChangeHandler<String> {
 	private IDataContainer dataContainer;
 	private ArrayList<String> persistSuccess = new ArrayList<String>();
 	
-	public NotesController(IDataContainer dataContainer) {
+	public NotesController(IDataContainer dataContainer, ICommunicationHandler commHandler) {
 		this.dataContainer = dataContainer;
+		this.commHandler = commHandler;
 	}
 	
 	public void loadModule() {
 		if (!GWT.isProdMode()) {
-			APP_ID = "2402961527"; // APP ID FOR LOCAL TESTING - CHANGE THIS FOR YOUR LOCAL APP
+			getCommunicationHandler().setCommunicationId("2402961527"); // APP ID FOR LOCAL TESTING - CHANGE THIS FOR YOUR LOCAL APP
 			Util.LOG = true; // Change to false to disable GWT.log() calls
 		}
 		History.addValueChangeHandler(this);
 		ServerRequest.setSecretNotes(this);
 		
-		initFacebook();
+		getCommunicationHandler().initCommunication();
 		initPanels();
-	}
-	
-	private void initFacebook() {
-		fbCore.init(APP_ID, status, cookie, xfbml);
 	}
 	
 	private void initPanels() {
@@ -146,7 +137,7 @@ public class NotesController implements ValueChangeHandler<String> {
 		// Get notified when user session is changed
 		//
 		SessionChangeCallback sessionChangeCallback = new SessionChangeCallback();
-		fbEvent.subscribe("auth.authResponseChange", sessionChangeCallback);
+		getCommunicationHandler().subscribeSessionChange(sessionChangeCallback);
 
 		// Callback used when checking login status
 		class LoginStatusCallback extends Callback<JavaScriptObject> {
@@ -157,7 +148,7 @@ public class NotesController implements ValueChangeHandler<String> {
 		LoginStatusCallback loginStatusCallback = new LoginStatusCallback();
 
 		// Get login status
-		//fbCore.getLoginStatus(loginStatusCallback);
+		//getCommunicationHandler().registerLoginCallback(loginStatusCallback);
         //showPage(Window.Location.getHash());
 	}
 	
@@ -213,7 +204,7 @@ public class NotesController implements ValueChangeHandler<String> {
 	public boolean checkSession(String pendingPage) {
 		if (Util.LOG) GWT.log("checkSession() called with pending page: "+pendingPage);
 		boolean result = true;
-		if ( fbCore.getSession() == null ) {
+		if (getCommunicationHandler().getSession() == null) {
 			if (Util.LOG) GWT.log("No session.");
 			result = false;
         } else {
@@ -236,7 +227,7 @@ public class NotesController implements ValueChangeHandler<String> {
 				handleLoggedInUserInfoResponse(response);
 			}
 		}
-		fbCore.api("/me", new MeCallback());
+		getCommunicationHandler().sendCurrentUserRequest(new MeCallback());
 	}
 	
 	private void requestFriendsList() {
@@ -254,7 +245,7 @@ public class NotesController implements ValueChangeHandler<String> {
 			}
 		}
 		if (Util.LOG) GWT.log("Sending out request for list of friends.");
-		fbCore.api("/me/friends", new FriendsCallback());
+		getCommunicationHandler().sendCurrentUserFriendsRequest(new FriendsCallback());
 	}
 	
 	private void handleFriendsListResponse(JavaScriptObject response) {
@@ -304,7 +295,7 @@ public class NotesController implements ValueChangeHandler<String> {
 				requestAlbums(id);
 			}
 		}
-		fbCore.api("/" +id+ "/photos", new PictureCallback());
+		getCommunicationHandler().sendUploadedPhotosRequest(id, new PictureCallback());
 	}
 	
 	private void processPhotosRequest(JavaScriptObject response) {
@@ -331,7 +322,7 @@ public class NotesController implements ValueChangeHandler<String> {
 				processAlbumsRequest(id, response);
 			}
 		}
-		fbCore.api("/" +id+ "/albums", new AlbumCallback());
+		getCommunicationHandler().sendAlbumsRequest(id, new AlbumCallback());
 	}
 	
 	public void processAlbumsRequest(String userId, JavaScriptObject response) {
@@ -359,7 +350,7 @@ public class NotesController implements ValueChangeHandler<String> {
 				processPhotoLink(response);
 			}
 		}
-		fbCore.api("/"+photoId, new PhotoLinkCallback());
+		getCommunicationHandler().sendPhotoRequest(photoId, new PhotoLinkCallback());
 	}
 	
 	public void processPhotoLink(JavaScriptObject response) {
@@ -384,7 +375,7 @@ public class NotesController implements ValueChangeHandler<String> {
 				processAlbumPhotosRequest(albumId, response);
 			}
 		}
-		fbCore.api("/" +albumId+ "/photos", new AlbumPhotosCallback());
+		getCommunicationHandler().sendAlbumPhotosRequest(albumId, new AlbumPhotosCallback());
 	}
 	
 	public void processAlbumPhotosRequest(String albumId, JavaScriptObject response) {
@@ -651,6 +642,10 @@ public class NotesController implements ValueChangeHandler<String> {
 	
 	public IDataContainer getDataContainer() {
 		return dataContainer;
+	}
+	
+	private ICommunicationHandler getCommunicationHandler() {
+		return commHandler;
 	}
 	
 	public void onValueChange(ValueChangeEvent<String> event) {
