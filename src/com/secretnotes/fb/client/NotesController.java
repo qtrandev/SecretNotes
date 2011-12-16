@@ -560,8 +560,7 @@ public class NotesController implements ValueChangeHandler<String> {
 			loadingGif.getElement().setId("loadingGif");
 			loadingPanel.add(loadingGif);
 			
-			HTMLPanel fbButton = new HTMLPanel("<fb:login-button autologoutlink='true' "+
-					"scope='publish_stream,read_stream,user_photos,friends_photos'></fb:login-button>");
+			HTMLPanel fbButton = new HTMLPanel(getCommunicationHandler().getLoginHTML());
 			fbButton.getElement().setId("fbButton");
 			fbPanel.add(loadingPanel);
 			fbPanel.add(fbButton);
