@@ -38,11 +38,6 @@ public class CommunicationHandler implements ICommunicationHandler {
 		APP_ID = id;
 	}
 	
-	public String getLoginHTML() {
-		return "<fb:login-button autologoutlink='true' "+
-			"scope='publish_stream,read_stream,user_photos,friends_photos'></fb:login-button>";
-	}
-	
 	public void subscribeSessionChange(AsyncCallback<JavaScriptObject> sessionChangeCallback) {
 		getFbEvent().subscribe("auth.authResponseChange", sessionChangeCallback);
 	}

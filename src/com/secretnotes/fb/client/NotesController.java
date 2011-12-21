@@ -6,21 +6,11 @@ import java.util.HashMap;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.secretnotes.fb.client.data.Album;
 import com.secretnotes.fb.client.data.IDataContainer;
 import com.secretnotes.fb.client.data.Photo;
@@ -33,30 +23,18 @@ public class NotesController implements ValueChangeHandler<String> {
 
 	// Facebook-related initialization
 	private ICommunicationHandler commHandler;
-	
-	// UI components
-	private FlowPanel mainPanel;
-	private SimplePanel contentPanel;
-	private FlowPanel headerPanel;
-	private FlowPanel navPanel;
-	private FlowPanel homePanel;
-	private FriendsContainerPanel friendsContainerPanel;
-	private FriendsPanel friendsPanel;
-	private FriendPhotosPanel friendProfilePanel;
-	private FlowPanel queryPanel;
-	private NotesPanel notesDisplay;
-	private HTML welcomeHtml;
-	private String currentPage = Util.PAGE_HOME;
-	private String pendingPage = null;
-	private Element loadingGif;
+	private IUiHandler uiHandler;
 	
 	// Model components
 	private IDataContainer dataContainer;
 	private ArrayList<String> persistSuccess = new ArrayList<String>();
 	
-	public NotesController(IDataContainer dataContainer, ICommunicationHandler commHandler) {
+	private String requestedPage = null;
+	
+	public NotesController(IDataContainer dataContainer, ICommunicationHandler commHandler, IUiHandler uiHandler) {
 		this.dataContainer = dataContainer;
 		this.commHandler = commHandler;
+		this.uiHandler = uiHandler;
 	}
 	
 	public void loadModule() {
@@ -68,50 +46,9 @@ public class NotesController implements ValueChangeHandler<String> {
 		ServerRequest.setSecretNotes(this);
 		
 		getCommunicationHandler().initCommunication();
-		initPanels();
-	}
-	
-	private void initPanels() {
-		RootPanel root = RootPanel.get();
-		getMainPanel().getElement().setId("mainPanel");
-		getContentPanel().getElement().setId("contentPanel");
-		getNavPanel().getElement().setId("navPanel");
-		getMainPanel().add(getHeaderPanel());
-		getMainPanel().add(getNavPanel());
-		getMainPanel().add(getContentPanel());
-		root.add(getMainPanel());
-		
-		loadingGif = DOM.getElementById("loadingPanel");
-		showLoading(false);
-		
-		initHomePanel();
-        initQueryPanel();
-        getFriendsContainerPanel().add(getFriendsPanel(), "Friends");
-        getFriendsContainerPanel().setHeight("600px");
-        getFriendsPanel().getElement().setId("friendsPanel");
-        getFriendsContainerPanel().add(getFriendProfilePanel(), getFriendProfilePanel().getDisplayTitle());
-        getFriendProfilePanel().getElement().setId("friendProfilePanel");
-        showHomePanel();
+		getUiHandler().initPanels();
         
         callFacebook();
-	}
-	
-	private void initHomePanel() {
-		if (Util.LOG) GWT.log("Initialize default home panel.");
-		getHomePanel().clear();
-        welcomeHtml = new HTML(Util.MESSAGES.hello_basic());
-        Anchor sourceLink = new Anchor("Facebook Link");
-        sourceLink.addStyleName("sourceLink");
-        sourceLink.setTarget("blank");
-        sourceLink.setHref("http://www.facebook.com");
-        getHomePanel().add(welcomeHtml);
-        getHomePanel().add(sourceLink);
-	}
-	
-	private void initQueryPanel() {
-		getQueryPanel().add(new HTML(Util.MESSAGES.page_welcome("Query")));
-		getQueryPanel().add(new HTML("Nothing here yet"));
-		getQueryPanel().add(new HTML("<hr/>More to come"));
 	}
 	
 	private void callFacebook() {
@@ -122,14 +59,14 @@ public class NotesController implements ValueChangeHandler<String> {
 			public void onSuccess(JavaScriptObject response) {
 				// Make sure cookie is set so we can use the non async method
 				if (Util.LOG) GWT.log("Session change detected. Calling checkSession().");
-				if (!checkSession(currentPage)) {
+				if (!checkSession()) {
 					getDataContainer().setUser(null); // Reset user since may have logged out
 					getDataContainer().getFriendList().clear();
 					getDataContainer().getIdList().clear();
 					getDataContainer().getNameList().clear();
 					if (Util.LOG) GWT.log("User logged out.");
-					showPage(currentPage);
 				}
+				requestPage(getUiHandler().getCurrentPage());
 			}
 		}
 
@@ -142,7 +79,7 @@ public class NotesController implements ValueChangeHandler<String> {
 		// Callback used when checking login status
 		class LoginStatusCallback extends Callback<JavaScriptObject> {
 			public void onSuccess(JavaScriptObject response) {
-				showPage(Window.Location.getHash());
+				requestPage(getPageToShow(Window.Location.getHash()));
 			}
 		}
 		LoginStatusCallback loginStatusCallback = new LoginStatusCallback();
@@ -152,72 +89,16 @@ public class NotesController implements ValueChangeHandler<String> {
         //showPage(Window.Location.getHash());
 	}
 	
-	private void showPage(String token) {
-		if (Util.LOG) GWT.log("currentPage is: "+currentPage+", showPage called with token: "+token);
-		pendingPage = null;
-		token = token.replace("#", "");
-
-		if (token == null || "".equals(token) || "#".equals(token)) {
-			token = Util.PAGE_HOME;
-		}
-
-		if (token.endsWith(Util.PAGE_HOME)) {
-			if (!checkSession(Util.PAGE_HOME)) {
-				initHomePanel();
-			} else {
-				initHomePanel();
-				populateHomePanel();
-			}
-			showHomePanel();
-		} else if (token.endsWith(Util.PAGE_FRIENDS)) {
-			showFriendsPanel();
-			if (checkSession(Util.PAGE_FRIENDS)) {
-				getFriendsPanel().displayLoggedInFriendsPanel();
-			} else {
-				getFriendsPanel().initFriendsPanel();
-			}
-		} else if (token.endsWith(Util.PAGE_QUERY)) {
-			showQueryPanel();
-		} else if (token.endsWith(Util.PAGE_NOTES)) {
-			if (checkSession(Util.PAGE_NOTES)) {
-				getNotesDisplay().refreshPanel();
-				ServerRequest.getServer().requestNotes(getDataContainer().getUser().getUserId());
-				int i=0;
-				for (User friend : getDataContainer().getFriendList()) { // Send out notes request
-					ServerRequest.getServer().requestNotes(friend.getUserId());
-					if (i++>20) break;
-				}
-			} else {
-				getNotesDisplay().initPanels();
-			}
-			showNotesPanel();
-		} else {
-			if (Util.LOG) GWT.log("User entered unknown link: "+token);
-			Window.alert("Unknown url " + token);
-		}
-	}
-	
 	/** 
 	 * Check for a Facebook session.
 	 * @return true if the session is valid.
 	 */
-	public boolean checkSession(String pendingPage) {
-		if (Util.LOG) GWT.log("checkSession() called with pending page: "+pendingPage);
-		boolean result = true;
-		if (getCommunicationHandler().getSession() == null) {
-			if (Util.LOG) GWT.log("No session.");
-			result = false;
-        } else {
-        	if (getDataContainer().getUser() == null) {
-        		result = false;
-        		if (Util.LOG) GWT.log("User is null. Calling requestLoggedInUserInfo().");
-        		this.pendingPage = pendingPage; // Notify that we have to get data
-        		if (Util.LOG) GWT.log("Pending has been set as: "+pendingPage);
-        		showLoading(true);
-        		requestLoggedInUserInfo();
-        	}
-        }
-		return result;
+	public boolean checkSession() {
+		return getCommunicationHandler().getSession() != null;
+	}
+	
+	public boolean checkUserInfoExists() {
+		return getDataContainer().getUser() != null;
 	}
 	
 	private void requestLoggedInUserInfo() {
@@ -231,17 +112,17 @@ public class NotesController implements ValueChangeHandler<String> {
 	}
 	
 	private void requestFriendsList() {
-		getFriendsPanel().showInProgress();
+		getUiHandler().showInProgressText();
 		class FriendsCallback extends Callback<JavaScriptObject> {
 			public void onSuccess(JavaScriptObject response) {
 				if (Util.LOG)
 					GWT.log("List of friends request came back.");
 				handleFriendsListResponse(response);
 				// Data retrieval process done.
-				if (pendingPage != null) {
-					showLoading(false);
-					showPage(pendingPage);
+				if (requestedPage != null) {
+					requestPage(requestedPage);
 				}
+				getUiHandler().showLoading(false);
 			}
 		}
 		if (Util.LOG) GWT.log("Sending out request for list of friends.");
@@ -287,10 +168,7 @@ public class NotesController implements ValueChangeHandler<String> {
 		class PictureCallback extends Callback<JavaScriptObject> {
 			public void onSuccess(JavaScriptObject response) {
 				if (Util.LOG) GWT.log("Received photo request response. Showing photos.");
-				int tabIndex = getFriendsContainerPanel().getWidgetIndex(getFriendProfilePanel());
-				getFriendsContainerPanel().setTabText(tabIndex, getDataContainer().getFriendFromList(id).getName());
-				getFriendsContainerPanel().selectTab(getFriendProfilePanel());
-				getFriendProfilePanel().setFriend(id);
+				getUiHandler().setFriend(id);
 				processPhotosRequest(response);
 				requestAlbums(id);
 			}
@@ -312,7 +190,7 @@ public class NotesController implements ValueChangeHandler<String> {
 			photo = new Photo(properties);
 			photoList.add(photo);
 		}
-		getFriendProfilePanel().processUploadedPhotos(photoList);
+		getUiHandler().processUploadedPhotos(photoList);
 	}
 	
 	public void requestAlbums(final String id) {
@@ -338,7 +216,7 @@ public class NotesController implements ValueChangeHandler<String> {
 			properties.put(Util.ALBUM_COVER_PHOTO_ID, albums.get(i).get(Util.ALBUM_COVER_PHOTO_ID));
 			album = new Album(properties);
 			getDataContainer().addAlbum(userId, album);
-			getFriendProfilePanel().addAlbum(album);
+			getUiHandler().addAlbum(album);
 			requestPhotoLink(album.getCoverPhotoId());
 		}
 	}
@@ -364,8 +242,7 @@ public class NotesController implements ValueChangeHandler<String> {
 		
 		Photo photo = new Photo(properties);
 		getDataContainer().addPhoto(photo);
-		getFriendProfilePanel().refreshPhotos(photo);
-		//getFriendProfilePanel().add(new HTML("<img src='"+photo.getPicture()+"'>"));
+		getUiHandler().refreshPhotos(photo);
 	}
 	
 	public void requestAlbumPhotos(final String albumId) {
@@ -395,7 +272,7 @@ public class NotesController implements ValueChangeHandler<String> {
 			getDataContainer().addPhoto(photo);
 			photos.add(photo);
 		}
-		getFriendProfilePanel().addAlbumPhotos(albumId, photos);
+		getUiHandler().addAlbumPhotos(albumId, photos);
 	}
 
 	public void requestNotes(final String userId, NotesServiceAsync notesService) {
@@ -412,7 +289,7 @@ public class NotesController implements ValueChangeHandler<String> {
 				}
 				if (Util.LOG) GWT.log("Received notes for "+userId+": "+print);
 				updateNotesInFriendsList(userId, notes);
-				getNotesDisplay().refreshNoteSelection(userId, notes);
+				getUiHandler().refreshNoteSelection(userId, notes);
 			}
 		});
 	}
@@ -463,52 +340,11 @@ public class NotesController implements ValueChangeHandler<String> {
 			}
 		}
 	}
-
-	private void showHomePanel() {
-		currentPage = Util.PAGE_HOME;
-		getContentPanel().setWidget(getHomePanel());
-	}
-	
-	private void showNotesPanel() {
-		currentPage = Util.PAGE_NOTES;
-		getContentPanel().setWidget(getNotesDisplay());
-	}
-	
-	private void showFriendsPanel() {
-		currentPage = Util.PAGE_FRIENDS;
-		getContentPanel().setWidget(getFriendsContainerPanel());
-		getFriendsContainerPanel().selectTab(getFriendsPanel());
-	}
-	
-	private void showQueryPanel() {
-		currentPage = Util.PAGE_QUERY;
-		getContentPanel().setWidget(getQueryPanel());
-	}
 	
 	private void handleLoggedInUserInfoResponse(JavaScriptObject response) {
 		JSOModel jso = response.cast();
 		getDataContainer().setUser(createUser(jso));
 		requestFriendsList();
-	}
-	
-	private void showLoading(boolean show) {
-		loadingGif.getStyle().setVisibility(show?Visibility.VISIBLE:Visibility.HIDDEN);
-	}
-	
-	private void populateHomePanel() {
-		User user = getDataContainer().getUser();
-		welcomeHtml.setHTML (Util.MESSAGES.hello(user.getName()) + 
-				"ID: " + user.getUserId() + "<br>" +
-				"FIRST NAME: " + user.getFirstName() + "<br>" +
-				"LAST NAME: " + user.getLastName() + "<br>" +
-				"LINK: " + user.getLink() + "<br>" +
-				"GENDER: " + user.getGender() + "<br>" +
-				"TIMEZONE: " + user.getTimezone() + "<br>" +
-				"LOCALE: " + user.getLocale() + "<br>" +
-				"VERIFIED: " + user.getVerified() + "<br>" +
-				"UPDATED TIME: " + user.getUpdatedTime() + "<br>" +
-				"TYPE: " + user.getType()
-			);
 	}
 	
 	private User createUser(JSOModel jso) {
@@ -528,117 +364,6 @@ public class NotesController implements ValueChangeHandler<String> {
 		return user;
 	}
 	
-	private FlowPanel getMainPanel() {
-		if (mainPanel == null) {
-			mainPanel = new FlowPanel();
-		}
-		return mainPanel;
-	}
-	
-	private SimplePanel getContentPanel() {
-		if (contentPanel == null) {
-			contentPanel = new SimplePanel();
-		}
-		return contentPanel;
-	}
-	
-	private FlowPanel getHeaderPanel() {
-		if (headerPanel == null) {
-			headerPanel = new FlowPanel();
-			headerPanel.getElement().setId("headerPanel");
-			SimplePanel logoPanel = new SimplePanel();
-			logoPanel.getElement().setId("logoPanel");
-			logoPanel.add(new Image("logo.png"));
-			headerPanel.add(logoPanel);
-			
-			FlowPanel fbPanel = new FlowPanel();
-			fbPanel.getElement().setId("fbPanel");
-			
-			SimplePanel loadingPanel = new SimplePanel();
-			loadingPanel.getElement().setId("loadingPanel");
-			Image loadingGif = new Image("loading.gif");
-			loadingGif.getElement().setId("loadingGif");
-			loadingPanel.add(loadingGif);
-			
-			HTMLPanel fbButton = new HTMLPanel(getCommunicationHandler().getLoginHTML());
-			fbButton.getElement().setId("fbButton");
-			fbPanel.add(loadingPanel);
-			fbPanel.add(fbButton);
-			headerPanel.add(fbPanel);
-		}
-		return headerPanel;
-	}
-	
-	private FlowPanel getNavPanel() {
-		if (navPanel == null) {
-			navPanel = new FlowPanel();
-			
-			Anchor homeLink = new Anchor();
-			homeLink.setHref("#"+Util.PAGE_HOME);
-			homeLink.getElement().setId("homeLink");
-			
-			Anchor friendsLink = new Anchor();
-			friendsLink.setHref("#"+Util.PAGE_FRIENDS);
-			friendsLink.getElement().setId("friendsLink");
-			
-			Anchor notesLink = new Anchor();
-			notesLink.setHref("#"+Util.PAGE_NOTES);
-			notesLink.getElement().setId("notesLink");
-			
-			Anchor queryLink = new Anchor();
-			queryLink.setHref("#"+Util.PAGE_QUERY);
-			queryLink.getElement().setId("queryLink");
-			
-			navPanel.add(homeLink);
-			navPanel.add(friendsLink);
-			navPanel.add(notesLink);
-			navPanel.add(queryLink);
-		}
-		return navPanel;
-	}
-	
-	private FlowPanel getHomePanel() {
-		if (homePanel == null) {
-			homePanel = new FlowPanel();
-		}
-		return homePanel;
-	}
-	
-	private FriendsContainerPanel getFriendsContainerPanel() {
-		if (friendsContainerPanel == null) {
-			friendsContainerPanel = new FriendsContainerPanel();
-		}
-		return friendsContainerPanel;
-	}
-	
-	private FriendsPanel getFriendsPanel() {
-		if (friendsPanel == null) {
-			friendsPanel = new FriendsPanel(getDataContainer());
-		}
-		return friendsPanel;
-	}
-	
-	private FriendPhotosPanel getFriendProfilePanel() {
-		if (friendProfilePanel == null) {
-			friendProfilePanel = new FriendPhotosPanel(getDataContainer());
-		}
-		return friendProfilePanel;
-	}
-	
-	private FlowPanel getQueryPanel() {
-		if (queryPanel == null) {
-			queryPanel = new FlowPanel();
-		}
-		return queryPanel;
-	}
-	
-	private NotesPanel getNotesDisplay() {
-		if (notesDisplay == null) {
-			notesDisplay = new NotesPanel(getDataContainer());
-		}
-		return notesDisplay;
-	}
-	
 	public IDataContainer getDataContainer() {
 		return dataContainer;
 	}
@@ -647,8 +372,35 @@ public class NotesController implements ValueChangeHandler<String> {
 		return commHandler;
 	}
 	
+	private IUiHandler getUiHandler() {
+		return uiHandler;
+	}
+	
+	private String getPageToShow(String token) {
+		token = token.replace("#", "");
+		if (token == null || "".equals(token) || "#".equals(token)) {
+			token = Util.PAGE_HOME;
+		}
+		return token;
+	}
+	
+	private void requestPage(String page) {
+		requestedPage = null;
+		if (checkSession()) {
+			if (checkUserInfoExists()) {
+				getUiHandler().showPage(page, false); // Show full data display
+			} else { // Request the user data
+				requestedPage = page;
+				getUiHandler().showLoading(true);
+				requestLoggedInUserInfo();
+			}
+		} else {
+			getUiHandler().showPage(page, true); // Show default display
+		}
+	}
+	
 	public void onValueChange(ValueChangeEvent<String> event) {
-		showPage(event.getValue());
+		requestPage(getPageToShow(event.getValue()));
 	}
 
 }

@@ -8,7 +8,8 @@ public class SecretNotes implements EntryPoint {
 	public void onModuleLoad() {
 		DataContainer dataContainer = new DataContainer();
 		CommunicationHandler communicationHandler = new CommunicationHandler();
-		NotesController notesController = new NotesController(dataContainer, communicationHandler);
+		UiHandler uiHandler = new UiHandler(dataContainer);
+		NotesController notesController = new NotesController(dataContainer, communicationHandler, uiHandler);
 		notesController.loadModule();
 	}
 }

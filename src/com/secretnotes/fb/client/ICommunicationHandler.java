@@ -16,5 +16,4 @@ public interface ICommunicationHandler {
 	public void sendPhotoRequest(String photoId, AsyncCallback<JavaScriptObject> callback);
 	public void sendAlbumPhotosRequest(String albumId, AsyncCallback<JavaScriptObject> callback);
 	public void registerLoginCallback(AsyncCallback<JavaScriptObject> callback);
-	public String getLoginHTML();
 }
