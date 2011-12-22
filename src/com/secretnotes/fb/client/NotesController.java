@@ -79,14 +79,14 @@ public class NotesController implements ValueChangeHandler<String> {
 		// Callback used when checking login status
 		class LoginStatusCallback extends Callback<JavaScriptObject> {
 			public void onSuccess(JavaScriptObject response) {
+				if (Util.LOG) GWT.log("LoginStatusCallback detected - onSuccess(): requestPage() called with "+Window.Location.getHash());
 				requestPage(getPageToShow(Window.Location.getHash()));
 			}
 		}
 		LoginStatusCallback loginStatusCallback = new LoginStatusCallback();
 
 		// Get login status
-		//getCommunicationHandler().registerLoginCallback(loginStatusCallback);
-        //showPage(Window.Location.getHash());
+		getCommunicationHandler().registerLoginCallback(loginStatusCallback);
 	}
 	
 	/** 
