@@ -109,8 +109,8 @@ public class UiHandler implements IUiHandler {
 				getNotesDisplay().refreshPanel();
 				ServerRequest.getServer().requestNotes(getDataContainer().getUser().getUserId());
 				int i=0;
-				for (User friend : getDataContainer().getFriendList()) { // Send out notes request
-					ServerRequest.getServer().requestNotes(friend.getUserId());
+				for (String friendUserId : getDataContainer().getFriendUserIds()) { // Send out notes request
+					ServerRequest.getServer().requestNotes(friendUserId);
 					if (i++>20) break;
 				}
 			}

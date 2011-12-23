@@ -12,7 +12,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.secretnotes.fb.client.data.IDataContainer;
-import com.secretnotes.fb.client.data.User;
 
 public class NotesPanel extends Composite {
 	
@@ -106,12 +105,13 @@ public class NotesPanel extends Composite {
 		FriendPanel fp;
 		int stop=0;
 		friendPanelsMap.clear();
-		for (User friend : getDataContainer().getFriendList()) {
-			fp = new FriendPanel(friend.getUserId(), friend.getProfilePic(), friend.getName(), Util.NOTES_CATEGORY, 
+		for (String friendId : getDataContainer().getFriendUserIds()) {
+			fp = new FriendPanel(friendId, getDataContainer().getFriendProfilePic(friendId),
+					getDataContainer().getFriendName(friendId), Util.NOTES_CATEGORY, 
 					getDataContainer().getUser().getUserId());
 			fp.setStyleName("friend_panel");
 			getFriendsPanel().add(fp);
-			friendPanelsMap.put(friend.getUserId(), fp);
+			friendPanelsMap.put(friendId, fp);
 			if (stop++>20) break; // Limit to reduce requests - TEMP
 		}
 		

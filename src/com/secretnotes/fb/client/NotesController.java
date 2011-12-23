@@ -12,7 +12,6 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.secretnotes.fb.client.data.Album;
-import com.secretnotes.fb.client.data.IDataContainer;
 import com.secretnotes.fb.client.data.Photo;
 import com.secretnotes.fb.client.data.User;
 
@@ -21,18 +20,16 @@ import com.secretnotes.fb.client.data.User;
  */
 public class NotesController implements ValueChangeHandler<String> {
 
-	// Facebook-related initialization
 	private ICommunicationHandler commHandler;
 	private IUiHandler uiHandler;
+	private IModelController modelController;
 	
-	// Model components
-	private IDataContainer dataContainer;
 	private ArrayList<String> persistSuccess = new ArrayList<String>();
 	
 	private String requestedPage = null;
 	
-	public NotesController(IDataContainer dataContainer, ICommunicationHandler commHandler, IUiHandler uiHandler) {
-		this.dataContainer = dataContainer;
+	public NotesController(IModelController modelController, ICommunicationHandler commHandler, IUiHandler uiHandler) {
+		this.modelController = modelController;
 		this.commHandler = commHandler;
 		this.uiHandler = uiHandler;
 	}
@@ -60,10 +57,7 @@ public class NotesController implements ValueChangeHandler<String> {
 				// Make sure cookie is set so we can use the non async method
 				if (Util.LOG) GWT.log("Session change detected. Calling checkSession().");
 				if (!checkSession()) {
-					getDataContainer().setUser(null); // Reset user since may have logged out
-					getDataContainer().getFriendList().clear();
-					getDataContainer().getIdList().clear();
-					getDataContainer().getNameList().clear();
+					getModelController().resetUser(); // Reset user since may have logged out
 					if (Util.LOG) GWT.log("User logged out.");
 				}
 				requestPage(getUiHandler().getCurrentPage());
@@ -97,9 +91,6 @@ public class NotesController implements ValueChangeHandler<String> {
 		return getCommunicationHandler().getSession() != null;
 	}
 	
-	public boolean checkUserInfoExists() {
-		return getDataContainer().getUser() != null;
-	}
 	
 	private void requestLoggedInUserInfo() {
 		class MeCallback extends Callback<JavaScriptObject> {
@@ -131,10 +122,7 @@ public class NotesController implements ValueChangeHandler<String> {
 	
 	private void handleFriendsListResponse(JavaScriptObject response) {
 		JSOModel jso = response.cast();
-		getDataContainer().getIdList().clear();
-		getDataContainer().getIdList().put(getDataContainer().getUser().getName(), getDataContainer().getUser().getUserId());
-		getDataContainer().getNameList().clear();
-		getDataContainer().getNameList().put(getDataContainer().getUser().getUserId(), getDataContainer().getUser().getName());
+		getModelController().resetLookupList();
 		JsArray<JSOModel> friends = jso.getArray(Util.ARRAY_DATA);
 		populateFriendList(friends);
 		String friendName;
@@ -142,8 +130,7 @@ public class NotesController implements ValueChangeHandler<String> {
 		for (int i=0; i<friends.length(); i++) {
 			friendName = friends.get(i).get(Util.USER_NAME);
 			id = friends.get(i).get(Util.USER_ID);
-			getDataContainer().getIdList().put(friendName,id);
-			getDataContainer().getNameList().put(id,friendName);
+			getModelController().insertLookupList(friendName, id);
 		}
 	}
 	
@@ -160,7 +147,7 @@ public class NotesController implements ValueChangeHandler<String> {
 			friend.setLink(item.get(Util.USER_LINK));
 			friend.setProfilePic("http://graph.facebook.com/" + friend.getUserId() + "/picture?type=large");
 			friend.setGender(item.get(Util.USER_GENDER));
-			getDataContainer().getFriendList().add(friend);
+			getModelController().addToFriendList(friend);
 		}
 	}
 	
@@ -215,7 +202,7 @@ public class NotesController implements ValueChangeHandler<String> {
 			properties.put(Util.ALBUM_COUNT, albums.get(i).get(Util.ALBUM_COUNT));
 			properties.put(Util.ALBUM_COVER_PHOTO_ID, albums.get(i).get(Util.ALBUM_COVER_PHOTO_ID));
 			album = new Album(properties);
-			getDataContainer().addAlbum(userId, album);
+			getModelController().addAlbum(userId, album);
 			getUiHandler().addAlbum(album);
 			requestPhotoLink(album.getCoverPhotoId());
 		}
@@ -241,7 +228,7 @@ public class NotesController implements ValueChangeHandler<String> {
 		
 		
 		Photo photo = new Photo(properties);
-		getDataContainer().addPhoto(photo);
+		getModelController().addPhoto(photo);
 		getUiHandler().refreshPhotos(photo);
 	}
 	
@@ -269,14 +256,14 @@ public class NotesController implements ValueChangeHandler<String> {
 			properties.put(Util.PHOTO_SOURCE, albums.get(i).get(Util.PHOTO_SOURCE));
 			
 			photo = new Photo(properties);
-			getDataContainer().addPhoto(photo);
+			getModelController().addPhoto(photo);
 			photos.add(photo);
 		}
 		getUiHandler().addAlbumPhotos(albumId, photos);
 	}
 
 	public void requestNotes(final String userId, NotesServiceAsync notesService) {
-		if (Util.LOG) GWT.log("requestNotes called for "+getDataContainer().getNameList().get(userId)+" ("+userId+").");
+		if (Util.LOG) GWT.log("requestNotes called for "+getModelController().getNameFromId(userId)+" ("+userId+").");
 		notesService.getNotes(userId, new AsyncCallback<String[]>() {
 			public void onFailure(Throwable error) {
 				if (Util.LOG) GWT.log("Received ERROR with requestNotes() for "+userId+".");
@@ -288,21 +275,21 @@ public class NotesController implements ValueChangeHandler<String> {
 					print=print+note+", ";
 				}
 				if (Util.LOG) GWT.log("Received notes for "+userId+": "+print);
-				updateNotesInFriendsList(userId, notes);
+				getModelController().updateNotesInFriendsList(userId, notes);
 				getUiHandler().refreshNoteSelection(userId, notes);
 			}
 		});
 	}
 	
 	public void persistNotes(final String userId, String userName, String[] notes, String ownerId, final boolean showAlert, NotesServiceAsync notesService) {
-		if (Util.LOG) GWT.log("persistNotes called for "+getDataContainer().getNameList().get(userId)+" ("+userId+").");
+		if (Util.LOG) GWT.log("persistNotes called for "+getModelController().getNameFromId(userId)+" ("+userId+").");
 		notesService.setNotes(userId, userName, ownerId, notes, new AsyncCallback<Void>() {
 			  public void onFailure(Throwable error) {
 				  if (Util.LOG) GWT.log("Received ERROR with persistNotes() for "+userId+".");
 			  }
 			  public void onSuccess(Void ignore) {
 				  if (Util.LOG) GWT.log("Notes persisted successfully for "+userId+".");
-				  if (showAlert) Window.alert("Notes saved for "+getDataContainer().getNameList().get(userId)+" ("+userId+")!");
+				  if (showAlert) Window.alert("Notes saved for "+getModelController().getNameFromId(userId)+" ("+userId+")!");
 			  }
 		  });
 	}
@@ -328,22 +315,9 @@ public class NotesController implements ValueChangeHandler<String> {
 		}
 	}
 	
-	private void updateNotesInFriendsList(String userId, String[] notes) {
-		if (userId.equals(getDataContainer().getUser().getUserId())) { // Handle main user
-			getDataContainer().getUser().setNotes(notes);
-			return;
-		}
-		for (User user : getDataContainer().getFriendList()) {
-			if (userId.equals(user.getUserId())) {
-				user.setNotes(notes);
-				break;
-			}
-		}
-	}
-	
 	private void handleLoggedInUserInfoResponse(JavaScriptObject response) {
 		JSOModel jso = response.cast();
-		getDataContainer().setUser(createUser(jso));
+		getModelController().setUser(createUser(jso));
 		requestFriendsList();
 	}
 	
@@ -364,8 +338,8 @@ public class NotesController implements ValueChangeHandler<String> {
 		return user;
 	}
 	
-	public IDataContainer getDataContainer() {
-		return dataContainer;
+	public IModelController getModelController() {
+		return modelController;
 	}
 	
 	private ICommunicationHandler getCommunicationHandler() {
@@ -387,7 +361,7 @@ public class NotesController implements ValueChangeHandler<String> {
 	private void requestPage(String page) {
 		requestedPage = null;
 		if (checkSession()) {
-			if (checkUserInfoExists()) {
+			if (getModelController().checkUserInfoExists()) {
 				getUiHandler().showPage(page, false); // Show full data display
 			} else { // Request the user data
 				requestedPage = page;

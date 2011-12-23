@@ -20,9 +20,54 @@ public class DataContainer implements IDataContainer {
 	public void setUser(User user) {
 		this.user = user;
 	}
+	
+	public void resetUser() {
+		setUser(null);
+		getFriendList().clear();
+		getIdList().clear();
+		getNameList().clear();
+	}
 
-	public ArrayList<User> getFriendList() {
+	private ArrayList<User> getFriendList() {
 		return friendList;
+	}
+	
+	public ArrayList<String> getFriendNames() {
+		ArrayList<String> result = new ArrayList<String>();
+		for (User friend : getFriendList()) {
+			result.add(friend.getName());
+		}
+		return result;
+	}
+	
+	public String getFriendName(String id) {
+		String result = null;
+		for (User friend : getFriendList()) {
+			if (friend.getUserId().equals(id)) {
+				result = friend.getName();
+				break;
+			}
+		}
+		return result;
+	}
+	
+	public String getFriendProfilePic(String id) {
+		String result = null;
+		for (User friend : getFriendList()) {
+			if (friend.getUserId().equals(id)) {
+				result = friend.getProfilePic();
+				break;
+			}
+		}
+		return result;
+	}
+	
+	public ArrayList<String> getFriendUserIds() {
+		ArrayList<String> result = new ArrayList<String>();
+		for (User friend : getFriendList()) {
+			result.add(friend.getUserId());
+		}
+		return result;
 	}
 	
 	public void addFriend(User friend) {
@@ -41,11 +86,35 @@ public class DataContainer implements IDataContainer {
 		return result;
 	}
 	
-	public HashMap<String,String> getIdList() {
+	public String getIdFromName(String name) {
+		return getIdList().get(name);
+	}
+	
+	public String getNameFromId(String id) {
+		return getNameList().get(id);
+	}
+	
+	public void resetLookupList() {
+		getIdList().clear();
+		getNameList().clear();
+		getIdList().put(getUser().getName(), getUser().getUserId());
+		getNameList().put(getUser().getUserId(), getUser().getName());
+	}
+	
+	public void insertLookupList(String name, String id) {
+		getIdList().put(name, id);
+		getNameList().put(id, name);
+	}
+	
+	public void addToFriendList(User friend) {
+		getFriendList().add(friend);
+	}
+	
+	private HashMap<String,String> getIdList() {
 		return idList;
 	}
 	
-	public HashMap<String,String> getNameList() {
+	private HashMap<String,String> getNameList() {
 		return nameList;
 	}
 
@@ -73,5 +142,19 @@ public class DataContainer implements IDataContainer {
 	
 	private HashMap<String, Photo> getPhotoMap() {
 		return photoMap;
+	}
+	
+	
+	public void updateNotesInFriendsList(String userId, String[] notes) {
+		if (userId.equals(getUser().getUserId())) { // Handle main user
+			getUser().setNotes(notes);
+			return;
+		}
+		for (User user : getFriendList()) {
+			if (userId.equals(user.getUserId())) {
+				user.setNotes(notes);
+				break;
+			}
+		}
 	}
 }

@@ -62,13 +62,13 @@ public class FriendsPanel extends DataRequestPanel implements DataRequester{
 		add(box);
 
 		oracle.add(getDataContainer().getUser().getName());
-		for (User friend : getDataContainer().getFriendList()) {
-			oracle.add(friend.getName());
+		for (String friendName : getDataContainer().getFriendNames()) {
+			oracle.add(friendName);
 		}
 		
 		Label friendLabel;
-		for (User friend : getDataContainer().getFriendList()) {
-			friendLabel = new Label(friend.getName());
+		for (String friendName : getDataContainer().getFriendNames()) {
+			friendLabel = new Label(friendName);
 			friendLabel.setStyleName("friendLinkLabel");
 			friendLabel.addClickHandler(new ClickHandler() {
 				public void onClick(ClickEvent event) {
@@ -90,7 +90,7 @@ public class FriendsPanel extends DataRequestPanel implements DataRequester{
 	}
 
 	private String lookUpId(String name) {
-		String id = getDataContainer().getIdList().get(name);
+		String id = getDataContainer().getIdFromName(name);
 		return id;
 	}
 	
