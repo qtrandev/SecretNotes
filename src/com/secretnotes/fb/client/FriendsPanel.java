@@ -13,7 +13,6 @@ import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.secretnotes.fb.client.data.IDataContainer;
-import com.secretnotes.fb.client.data.User;
 
 public class FriendsPanel extends DataRequestPanel implements DataRequester{
 	

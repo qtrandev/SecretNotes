@@ -45,9 +45,13 @@ public class CommunicationHandler implements ICommunicationHandler {
 	public void registerLoginCallback(AsyncCallback<JavaScriptObject> callback) {
 		getFbCore().getLoginStatus(callback);
 	}
-	
-	public JavaScriptObject getSession() {
-		return getFbCore().getSession();
+
+	/** 
+	 * Check for a Facebook session.
+	 * @return true if the session is valid.
+	 */
+	public boolean checkSession() {
+		return getFbCore().getSession() != null;
 	}
 	
 	public void sendRequest(String request, AsyncCallback<JavaScriptObject> callback) {

@@ -56,7 +56,7 @@ public class NotesController implements ValueChangeHandler<String> {
 			public void onSuccess(JavaScriptObject response) {
 				// Make sure cookie is set so we can use the non async method
 				if (Util.LOG) GWT.log("Session change detected. Calling checkSession().");
-				if (!checkSession()) {
+				if (!getCommunicationHandler().checkSession()) {
 					getModelController().resetUser(); // Reset user since may have logged out
 					if (Util.LOG) GWT.log("User logged out.");
 				}
@@ -82,15 +82,6 @@ public class NotesController implements ValueChangeHandler<String> {
 		// Get login status
 		getCommunicationHandler().registerLoginCallback(loginStatusCallback);
 	}
-	
-	/** 
-	 * Check for a Facebook session.
-	 * @return true if the session is valid.
-	 */
-	public boolean checkSession() {
-		return getCommunicationHandler().getSession() != null;
-	}
-	
 	
 	private void requestLoggedInUserInfo() {
 		class MeCallback extends Callback<JavaScriptObject> {
@@ -360,7 +351,7 @@ public class NotesController implements ValueChangeHandler<String> {
 	
 	private void requestPage(String page) {
 		requestedPage = null;
-		if (checkSession()) {
+		if (getCommunicationHandler().checkSession()) {
 			if (getModelController().checkUserInfoExists()) {
 				getUiHandler().showPage(page, false); // Show full data display
 			} else { // Request the user data
