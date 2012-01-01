@@ -20,6 +20,7 @@ import com.secretnotes.fb.client.data.User;
 
 public class UiHandler implements IUiHandler {
 
+	private INotesController notesController;
 	private IDataContainer dataContainer;
 	// UI components
 	private FlowPanel mainPanel;
@@ -38,6 +39,14 @@ public class UiHandler implements IUiHandler {
 	
 	public UiHandler(IDataContainer dataContainer) {
 		this.dataContainer = dataContainer;
+	}
+	
+	public void setNotesController(INotesController notesController) {
+		this.notesController = notesController;
+	}
+	
+	private INotesController getNotesController() {
+		return notesController;
 	}
 	
 	public void initPanels() {
@@ -107,10 +116,10 @@ public class UiHandler implements IUiHandler {
 			}
 			else {
 				getNotesDisplay().refreshPanel();
-				ServerRequest.getServer().requestNotes(getDataContainer().getUser().getUserId());
+				getNotesController().requestNotes(getDataContainer().getUser().getUserId());
 				int i=0;
 				for (String friendUserId : getDataContainer().getFriendUserIds()) { // Send out notes request
-					ServerRequest.getServer().requestNotes(friendUserId);
+					getNotesController().requestNotes(friendUserId);
 					if (i++>20) break;
 				}
 			}
@@ -251,14 +260,14 @@ public class UiHandler implements IUiHandler {
 	
 	private FriendsPanel getFriendsPanel() {
 		if (friendsPanel == null) {
-			friendsPanel = new FriendsPanel(getDataContainer());
+			friendsPanel = new FriendsPanel(getNotesController());
 		}
 		return friendsPanel;
 	}
 	
 	private FriendPhotosPanel getFriendProfilePanel() {
 		if (friendProfilePanel == null) {
-			friendProfilePanel = new FriendPhotosPanel(getDataContainer());
+			friendProfilePanel = new FriendPhotosPanel(getNotesController());
 		}
 		return friendProfilePanel;
 	}
@@ -272,7 +281,7 @@ public class UiHandler implements IUiHandler {
 	
 	private NotesPanel getNotesDisplay() {
 		if (notesDisplay == null) {
-			notesDisplay = new NotesPanel(getDataContainer());
+			notesDisplay = new NotesPanel(getNotesController());
 		}
 		return notesDisplay;
 	}

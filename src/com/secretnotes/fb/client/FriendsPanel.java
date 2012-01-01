@@ -1,5 +1,7 @@
 package com.secretnotes.fb.client;
 
+import java.util.ArrayList;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -12,14 +14,14 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
-import com.secretnotes.fb.client.data.IDataContainer;
+import com.secretnotes.fb.client.data.User;
 
-public class FriendsPanel extends DataRequestPanel implements DataRequester{
+public class FriendsPanel extends DataRequestPanel {
 	
 	private FlowPanel friendLinksPanel;
 	
-	public FriendsPanel(IDataContainer dataContainer) {
-		super(dataContainer);
+	public FriendsPanel(INotesController notesController) {
+		super(notesController);
 		initFriendsPanel();
 	}
 	
@@ -48,9 +50,11 @@ public class FriendsPanel extends DataRequestPanel implements DataRequester{
 
 	
 	public void displayLoggedInFriendsPanel() {
+		if (Util.LOG) GWT.log("Entered displayLoggedInFriendsPanel()");
 		clear();
-		add(new HTML("Hi "+getDataContainer().getUser().getFirstName()+"! Type a friend's name in the box."));
-		add(new Image(getDataContainer().getUser().getProfilePic()));
+		User currentUser = getNotesController().getUser();
+		add(new HTML("Hi "+currentUser.getFirstName()+"! Type a friend's name in the box."));
+		add(new Image(currentUser.getProfilePic()));
 		MultiWordSuggestOracle oracle = new MultiWordSuggestOracle ();
 		SuggestBox box = new SuggestBox(oracle);
 		box.addSelectionHandler(new SelectionHandler<Suggestion>() {
@@ -60,13 +64,18 @@ public class FriendsPanel extends DataRequestPanel implements DataRequester{
 		});
 		add(box);
 
-		oracle.add(getDataContainer().getUser().getName());
-		for (String friendName : getDataContainer().getFriendNames()) {
+		ArrayList<String> friendNames = getNotesController().getFriendNames();
+		oracle.add(currentUser.getName());
+		int i = 0;
+		for (String friendName : getNotesController().getFriendNames()) {
 			oracle.add(friendName);
+			if (Util.LOG) GWT.log("Add to oracle: "+(i++)+") "+friendName);
 		}
 		
+		if (Util.LOG) GWT.log("displayLoggedInFriendsPanel(): Added everything to oracle");
+		
 		Label friendLabel;
-		for (String friendName : getDataContainer().getFriendNames()) {
+		for (String friendName : friendNames) {
 			friendLabel = new Label(friendName);
 			friendLabel.setStyleName("friendLinkLabel");
 			friendLabel.addClickHandler(new ClickHandler() {
@@ -85,11 +94,11 @@ public class FriendsPanel extends DataRequestPanel implements DataRequester{
 	private void showPhotos(String name) {
 		String id = lookUpId(name);
 		if (Util.LOG) GWT.log("Sending request to get photos of "+name+" ("+id+").");
-		getServer().requestPhotos(id);
+		getNotesController().requestPhotos(id);
 	}
 
 	private String lookUpId(String name) {
-		String id = getDataContainer().getIdFromName(name);
+		String id = getNotesController().getIdFromName(name);
 		return id;
 	}
 	

@@ -15,6 +15,10 @@ public class ModelController implements IModelController {
 		this.dataContainer = dataContainer;
 	}
 	
+	public User getUser() {
+		return getDataContainer().getUser();
+	}
+	
 	public void setUser(User user) {
 		getDataContainer().setUser(user);
 	}
@@ -61,5 +65,17 @@ public class ModelController implements IModelController {
 	
 	public void updateNotesInFriendsList(String userId, String[] notes) {
 		getDataContainer().updateNotesInFriendsList(userId, notes);
+	}
+	
+	public User getFriendFromList(String userId) {
+		return getDataContainer().getFriendFromList(userId);
+	}
+
+	public String getIdFromName(String name) {
+		return getDataContainer().getIdFromName(name);
+	}
+	
+	public ArrayList<String> getFriendUserIds() {
+		return getDataContainer().getFriendUserIds();
 	}
 }

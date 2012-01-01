@@ -18,4 +18,5 @@ public interface IUiHandler {
 	public void addAlbumPhotos(String albumId, ArrayList<Photo> photos);
 	public void refreshNoteSelection(String userId, String[] notes);
 	public String getCurrentPage();
+	public void setNotesController(INotesController notesController);
 }

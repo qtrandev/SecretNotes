@@ -18,20 +18,23 @@ import com.secretnotes.fb.client.data.User;
 /** Main execution class 
  * @author Quyen Tran
  */
-public class NotesController implements ValueChangeHandler<String> {
+public class NotesController implements INotesController,ValueChangeHandler<String> {
 
 	private ICommunicationHandler commHandler;
 	private IUiHandler uiHandler;
 	private IModelController modelController;
+	private NotesServiceAsync notesService;
 	
 	private ArrayList<String> persistSuccess = new ArrayList<String>();
 	
 	private String requestedPage = null;
 	
-	public NotesController(IModelController modelController, ICommunicationHandler commHandler, IUiHandler uiHandler) {
+	public NotesController(IModelController modelController, ICommunicationHandler commHandler, IUiHandler uiHandler,
+			NotesServiceAsync notesService) {
 		this.modelController = modelController;
 		this.commHandler = commHandler;
 		this.uiHandler = uiHandler;
+		this.notesService = notesService;
 	}
 	
 	public void loadModule() {
@@ -40,7 +43,6 @@ public class NotesController implements ValueChangeHandler<String> {
 			Util.LOG = true; // Change to false to disable GWT.log() calls
 		}
 		History.addValueChangeHandler(this);
-		ServerRequest.setSecretNotes(this);
 		
 		getCommunicationHandler().initCommunication();
 		getUiHandler().initPanels();
@@ -253,9 +255,9 @@ public class NotesController implements ValueChangeHandler<String> {
 		getUiHandler().addAlbumPhotos(albumId, photos);
 	}
 
-	public void requestNotes(final String userId, NotesServiceAsync notesService) {
+	public void requestNotes(final String userId) {
 		if (Util.LOG) GWT.log("requestNotes called for "+getModelController().getNameFromId(userId)+" ("+userId+").");
-		notesService.getNotes(userId, new AsyncCallback<String[]>() {
+		getNotesService().getNotes(userId, new AsyncCallback<String[]>() {
 			public void onFailure(Throwable error) {
 				if (Util.LOG) GWT.log("Received ERROR with requestNotes() for "+userId+".");
 			}
@@ -272,9 +274,9 @@ public class NotesController implements ValueChangeHandler<String> {
 		});
 	}
 	
-	public void persistNotes(final String userId, String userName, String[] notes, String ownerId, final boolean showAlert, NotesServiceAsync notesService) {
+	public void persistNotes(final String userId, String userName, String[] notes, String ownerId, final boolean showAlert) {
 		if (Util.LOG) GWT.log("persistNotes called for "+getModelController().getNameFromId(userId)+" ("+userId+").");
-		notesService.setNotes(userId, userName, ownerId, notes, new AsyncCallback<Void>() {
+		getNotesService().setNotes(userId, userName, ownerId, notes, new AsyncCallback<Void>() {
 			  public void onFailure(Throwable error) {
 				  if (Util.LOG) GWT.log("Received ERROR with persistNotes() for "+userId+".");
 			  }
@@ -288,11 +290,10 @@ public class NotesController implements ValueChangeHandler<String> {
 	public void persistNotes(
 			final HashMap<String, String[]> userNotesMap, 
 			HashMap<String, String> userNamesMap, 
-			String ownerId,
-			NotesServiceAsync notesService) {
+			String ownerId) {
 		persistSuccess.clear();
 		for (final String userId : userNotesMap.keySet()) {
-			notesService.setNotes(userId, userNamesMap.get(userId), ownerId, userNotesMap.get(userId), new AsyncCallback<Void>() {
+			getNotesService().setNotes(userId, userNamesMap.get(userId), ownerId, userNotesMap.get(userId), new AsyncCallback<Void>() {
 				  public void onFailure(Throwable error) {
 					  Window.alert("ERROR: Only "+persistSuccess.size()+" friends' notes have been saved");
 				  }
@@ -341,6 +342,10 @@ public class NotesController implements ValueChangeHandler<String> {
 		return uiHandler;
 	}
 	
+    private NotesServiceAsync getNotesService() {
+    	return notesService;
+    }
+	
 	private String getPageToShow(String token) {
 		token = token.replace("#", "");
 		if (token == null || "".equals(token) || "#".equals(token)) {
@@ -367,5 +372,24 @@ public class NotesController implements ValueChangeHandler<String> {
 	public void onValueChange(ValueChangeEvent<String> event) {
 		requestPage(getPageToShow(event.getValue()));
 	}
-
+	
+	public User getUser() {
+		return getModelController().getUser();
+	}
+	
+	public ArrayList<String> getFriendNames() {
+		return getModelController().getFriendNames();
+	}
+	
+	public String getIdFromName(String name) {
+		return getModelController().getIdFromName(name);
+	}
+	
+	public User getFriendFromList(String userId) {
+		return getModelController().getFriendFromList(userId);
+	}
+	
+	public ArrayList<String> getFriendUserIds() {
+		return getModelController().getFriendUserIds();
+	}
 }

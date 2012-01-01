@@ -6,6 +6,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class CommunicationHandler implements ICommunicationHandler {
 	
+	private INotesController notesController;
+	
 	private FBCore fbCore;
 	private FBEvent fbEvent;
 	private String APP_ID;
@@ -20,6 +22,14 @@ public class CommunicationHandler implements ICommunicationHandler {
 		status = true;
 		xfbml = true;
 		cookie = true;
+	}
+	
+	public void setNotesController(INotesController notesController) {
+		this.notesController = notesController;
+	}
+	
+	private INotesController getNotesController() {
+		return notesController;
 	}
 	
 	private FBCore getFbCore() {

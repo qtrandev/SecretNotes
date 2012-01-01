@@ -11,11 +11,11 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.secretnotes.fb.client.data.IDataContainer;
+import com.secretnotes.fb.client.data.User;
 
-public class NotesPanel extends Composite {
+public class NotesPanel extends Composite implements DataRequester {
 	
-	private IDataContainer dataContainer;
+	private INotesController notesController;
 	private FlowPanel stackPanel;
 	private Label profileHeading;
 	private Label notesHeading;
@@ -32,8 +32,8 @@ public class NotesPanel extends Composite {
 	
 	private FlowPanel friendsPanel;
 
-	public NotesPanel(IDataContainer dataContainer) {
-		this.dataContainer = dataContainer;
+	public NotesPanel(INotesController notesController) {
+		this.notesController = notesController;
 		initPanels();
 		initWidget(getStackPanel());
 	}
@@ -105,10 +105,12 @@ public class NotesPanel extends Composite {
 		FriendPanel fp;
 		int stop=0;
 		friendPanelsMap.clear();
-		for (String friendId : getDataContainer().getFriendUserIds()) {
-			fp = new FriendPanel(friendId, getDataContainer().getFriendProfilePic(friendId),
-					getDataContainer().getFriendName(friendId), Util.NOTES_CATEGORY, 
-					getDataContainer().getUser().getUserId());
+		User friend;
+		for (String friendId : getNotesController().getFriendUserIds()) {
+			friend = getNotesController().getFriendFromList(friendId);
+			fp = new FriendPanel(getNotesController(), friendId, friend.getProfilePic(),
+					friend.getName(), Util.NOTES_CATEGORY, 
+					getNotesController().getUser().getUserId());
 			fp.setStyleName("friend_panel");
 			getFriendsPanel().add(fp);
 			friendPanelsMap.put(friendId, fp);
@@ -116,16 +118,17 @@ public class NotesPanel extends Composite {
 		}
 		
 		getProfilePanel().clear();
-		profilePic = new Image(getDataContainer().getUser().getProfilePic());
-		nameLabel = new Label(getDataContainer().getUser().getName());
-		infoLabel = new Label(getDataContainer().getUser().getLocale());
+		User user = getNotesController().getUser();
+		profilePic = new Image(user.getProfilePic());
+		nameLabel = new Label(user.getName());
+		infoLabel = new Label(user.getLocale());
 		getProfilePanel().add(profilePic);
 		getProfilePanel().add(nameLabel);
 		getProfilePanel().add(infoLabel);
 	}
 	
 	public void refreshNoteSelection(String userId, String[] notes) {
-		if (userId.equals(getDataContainer().getUser().getUserId())) { // Handle main user
+		if (userId.equals(getNotesController().getUser().getUserId())) { // Handle main user
 			for (String note : notes) {
 				for (CheckBox cb : cb_notes) {
 					if (note.equals(cb.getName())) {
@@ -149,7 +152,7 @@ public class NotesPanel extends Composite {
 			userNotesMap.put(fp.getUserId(), fp.getSelectedNotes());
 			userNamesMap.put(fp.getUserId(), fp.getUserName());
 		}
-		ServerRequest.getServer().persistNotes(userNotesMap, userNamesMap, getDataContainer().getUser().getUserId());
+		getNotesController().persistNotes(userNotesMap, userNamesMap, getNotesController().getUser().getUserId());
 	}
 	
 	private FlowPanel getStackPanel() {
@@ -180,7 +183,7 @@ public class NotesPanel extends Composite {
 		return friendsPanel;
 	}
 
-	private IDataContainer getDataContainer() {
-		return dataContainer;
+	public INotesController getNotesController() {
+		return notesController;
 	}
 }

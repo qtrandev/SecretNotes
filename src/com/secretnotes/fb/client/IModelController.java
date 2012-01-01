@@ -7,7 +7,7 @@ import com.secretnotes.fb.client.data.Photo;
 import com.secretnotes.fb.client.data.User;
 
 public interface IModelController {
-
+	public User getUser();
 	public void setUser(User user);
 	public void resetUser();
 	public boolean checkUserInfoExists();
@@ -19,4 +19,7 @@ public interface IModelController {
 	public void addPhoto(Photo photo);
 	public String getNameFromId(String id);
 	public void updateNotesInFriendsList(String userId, String[] notes);
+	public String getIdFromName(String name);
+	public User getFriendFromList(String userId);
+	public ArrayList<String> getFriendUserIds();
 }

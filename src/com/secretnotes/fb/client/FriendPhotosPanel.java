@@ -6,7 +6,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Label;
 import com.secretnotes.fb.client.data.Album;
-import com.secretnotes.fb.client.data.IDataContainer;
 import com.secretnotes.fb.client.data.Photo;
 import com.secretnotes.fb.client.data.User;
 import com.secretnotes.fb.client.ui.AlbumListPanel;
@@ -20,8 +19,8 @@ public class FriendPhotosPanel extends DataRequestPanel {
 	private User currentFriend;
 	private Label friendNameLabel;
 	
-	public FriendPhotosPanel(IDataContainer dataContainer) {
-		super(dataContainer);
+	public FriendPhotosPanel(INotesController notesController) {
+		super(notesController);
 		init();
 		resetPanel();
 	}
@@ -43,7 +42,7 @@ public class FriendPhotosPanel extends DataRequestPanel {
 	public void addAlbum(final Album album) {
 		ClickHandler clickHandler = new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				getServer().requestAlbumPhotos(album.getId());
+				getNotesController().requestAlbumPhotos(album.getId());
 			}
 		};
 		getAlbumListPanel().addAlbum(album, clickHandler);
@@ -72,7 +71,7 @@ public class FriendPhotosPanel extends DataRequestPanel {
 	}
 	
 	public void setFriend(String userId) {
-		currentFriend = getDataContainer().getFriendFromList(userId);
+		currentFriend = getNotesController().getFriendFromList(userId);
 	}
 	
 	private PhotoListPanel getPhotosPanel() {

@@ -11,7 +11,8 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 
-public class FriendPanel extends Composite {
+public class FriendPanel extends Composite implements DataRequester {
+	private INotesController notesController;
 	private FlowPanel friendStack;
 	private Image userImage;
 	private Label nameLabel;
@@ -22,7 +23,8 @@ public class FriendPanel extends Composite {
 	private String userName;
 	private String ownerId;
 	
-	public FriendPanel(String userId, String userImg, String name, String[] notesBoxes, String ownerId) {
+	public FriendPanel(INotesController notesController, String userId, String userImg, String name, String[] notesBoxes, String ownerId) {
+		this.notesController = notesController;
 		this.userId = userId;
 		this.userName = name;
 		this.ownerId = ownerId;
@@ -41,10 +43,14 @@ public class FriendPanel extends Composite {
 		initWidget(friendStack);
 		setNoteButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				ServerRequest.getServer().persistNotes(
+				getNotesController().persistNotes(
 						FriendPanel.this.userId, FriendPanel.this.userName, getSelectedNotes(), FriendPanel.this.ownerId, true);
 			}
 		});
+	}
+	
+	public INotesController getNotesController() {
+		return notesController;
 	}
 	
 	private void initNotesPanel(String[] notes) {

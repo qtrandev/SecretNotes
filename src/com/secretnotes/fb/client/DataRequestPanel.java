@@ -1,23 +1,18 @@
 package com.secretnotes.fb.client;
 
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.secretnotes.fb.client.data.IDataContainer;
 
 public abstract class DataRequestPanel extends FlowPanel implements
 		DataRequester {
 	
-	private IDataContainer dataContainer;
+	private INotesController notesController;
 	
-	public DataRequestPanel(IDataContainer dataContainer) {
+	public DataRequestPanel(INotesController notesController) {
 		super();
-		this.dataContainer = dataContainer;
+		this.notesController = notesController;
 	}
 
-	public IDataContainer getDataContainer() {
-		return dataContainer;
-	}
-
-	protected ServerRequest getServer() {
-		return ServerRequest.getServer();
+	public INotesController getNotesController() {
+		return notesController;
 	}
 }
