@@ -62,17 +62,15 @@ public class FriendsPanel extends DataRequestPanel {
 				showPhotos(event.getSelectedItem().getReplacementString());
 			}
 		});
-		add(box);
+		//add(box);
 
 		ArrayList<String> friendNames = getNotesController().getFriendNames();
 		oracle.add(currentUser.getName());
-		int i = 0;
-		for (String friendName : getNotesController().getFriendNames()) {
-			oracle.add(friendName);
-			if (Util.LOG) GWT.log("Add to oracle: "+(i++)+") "+friendName);
-		}
-		
-		if (Util.LOG) GWT.log("displayLoggedInFriendsPanel(): Added everything to oracle");
+//		int i = 0;
+//		for (String friendName : friendNames) {
+//			oracle.add(friendName);
+//			if (Util.LOG) GWT.log("Add to oracle: "+(i++)+") "+friendName);
+//		}
 		
 		Label friendLabel;
 		for (String friendName : friendNames) {
