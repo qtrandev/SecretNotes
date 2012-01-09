@@ -12,10 +12,10 @@ public interface IUiHandler {
 	public void showPage(String token, boolean defaultDisplay);
 	public void showLoading(boolean show);
 	public void setFriend(String id);
-	public void processUploadedPhotos(ArrayList<Photo> photos);
-	public void addAlbum(Album album);
-	public void refreshPhotos(Photo photo);
-	public void addAlbumPhotos(String albumId, ArrayList<Photo> photos);
+	public void processUploadedPhotos(String id, ArrayList<Photo> photos);
+	public void addAlbum(String id, Album album);
+	public void refreshPhotos(String id, Photo photo);
+	public void addAlbumPhotos(String id, String albumId, ArrayList<Photo> photos);
 	public void refreshNoteSelection(String userId, String[] notes);
 	public String getCurrentPage();
 	public void setNotesController(INotesController notesController);

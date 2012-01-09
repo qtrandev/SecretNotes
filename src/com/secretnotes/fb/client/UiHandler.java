@@ -1,16 +1,21 @@
 package com.secretnotes.fb.client;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Visibility;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.secretnotes.fb.client.data.Album;
@@ -30,7 +35,7 @@ public class UiHandler implements IUiHandler {
 	private FlowPanel homePanel;
 	private FriendsContainerPanel friendsContainerPanel;
 	private FriendsPanel friendsPanel;
-	private FriendPhotosPanel friendProfilePanel;
+	private HashMap<String,FriendPhotosPanel> friendPhotosPanelMap;
 	private FlowPanel queryPanel;
 	private NotesPanel notesDisplay;
 	private HTML welcomeHtml;
@@ -67,8 +72,6 @@ public class UiHandler implements IUiHandler {
         getFriendsContainerPanel().add(getFriendsPanel(), "Friends");
         getFriendsContainerPanel().setHeight("600px");
         getFriendsPanel().getElement().setId("friendsPanel");
-        getFriendsContainerPanel().add(getFriendProfilePanel(), getFriendProfilePanel().getDisplayTitle());
-        getFriendProfilePanel().getElement().setId("friendProfilePanel");
         showHomePanel();
 	}
 	
@@ -265,11 +268,11 @@ public class UiHandler implements IUiHandler {
 		return friendsPanel;
 	}
 	
-	private FriendPhotosPanel getFriendProfilePanel() {
-		if (friendProfilePanel == null) {
-			friendProfilePanel = new FriendPhotosPanel(getNotesController());
+	private HashMap<String,FriendPhotosPanel> getFriendPhotosPanelMap() {
+		if (friendPhotosPanelMap == null) {
+			friendPhotosPanelMap = new HashMap<String,FriendPhotosPanel>();
 		}
-		return friendProfilePanel;
+		return friendPhotosPanelMap;
 	}
 	
 	private FlowPanel getQueryPanel() {
@@ -296,26 +299,23 @@ public class UiHandler implements IUiHandler {
 	}
 	
 	public void setFriend(String id) {
-		int tabIndex = getFriendsContainerPanel().getWidgetIndex(getFriendProfilePanel());
-		getFriendsContainerPanel().setTabText(tabIndex, getDataContainer().getFriendFromList(id).getName());
-		getFriendsContainerPanel().selectTab(getFriendProfilePanel());
-		getFriendProfilePanel().setFriend(id);
+		getFriendsContainerPanel().selectTab(getFriendPhotosPanel(id));
 	}
 	
-	public void processUploadedPhotos(ArrayList<Photo> photos) {
-		getFriendProfilePanel().processUploadedPhotos(photos);
+	public void processUploadedPhotos(String id, ArrayList<Photo> photos) {
+		getFriendPhotosPanel(id).processUploadedPhotos(photos);
 	}
 	
-	public void addAlbum(Album album) {
-		getFriendProfilePanel().addAlbum(album);
+	public void addAlbum(String id, Album album) {
+		getFriendPhotosPanel(id).addAlbum(id, album);
 	}
 	
-	public void refreshPhotos(Photo photo) {
-		getFriendProfilePanel().refreshPhotos(photo);
+	public void refreshPhotos(String id, Photo photo) {
+		getFriendPhotosPanel(id).refreshPhotos(photo);
 	}
 	
-	public void addAlbumPhotos(String albumId, ArrayList<Photo> photos) {
-		getFriendProfilePanel().addAlbumPhotos(albumId, photos);
+	public void addAlbumPhotos(String id, String albumId, ArrayList<Photo> photos) {
+		getFriendPhotosPanel(id).addAlbumPhotos(albumId, photos);
 	}
 	
 	public void refreshNoteSelection(String userId, String[] notes) {
@@ -328,5 +328,43 @@ public class UiHandler implements IUiHandler {
 	
 	private void setCurrentPage(String currentPage) {
 		this.currentPage = currentPage;
+	}
+	
+	private FriendPhotosPanel getFriendPhotosPanel(String id) {
+		FriendPhotosPanel friendPhotosPanel = getFriendPhotosPanelMap().get(id);
+		if (friendPhotosPanel == null) {
+			friendPhotosPanel = new FriendPhotosPanel(getNotesController());
+			getFriendPhotosPanelMap().put(id, friendPhotosPanel);
+			TabCloseHeader tabCloseHeader = new TabCloseHeader(getDataContainer().getFriendFromList(id).getName(), id);
+			getFriendsContainerPanel().add(friendPhotosPanel, tabCloseHeader);
+			friendPhotosPanel.setFriend(id);
+			friendPhotosPanel.getElement().setId("friendProfilePanel");
+		}
+		return friendPhotosPanel;
+	}
+	
+	private void closeTab(String id) {
+		getFriendsContainerPanel().remove(getFriendPhotosPanel(id));
+		getFriendPhotosPanelMap().remove(id);
+	}
+	
+	private class TabCloseHeader extends FlowPanel {
+		private String tabUserId;
+		
+		public TabCloseHeader(String title, String id) {
+			this.setStyleName("tabCloseHeader");
+			tabUserId = id;
+			Label label = new Label(title);
+			label.setStyleName("tabCloseHeaderLabel");
+			add(label);
+			Button x = new Button("x");
+			x.setStyleName("tabCloseHeaderButton");
+			x.addClickHandler(new ClickHandler() {
+				public void onClick(ClickEvent event) {
+					closeTab(tabUserId);
+				}
+			});
+			add(x);
+		}
 	}
 }

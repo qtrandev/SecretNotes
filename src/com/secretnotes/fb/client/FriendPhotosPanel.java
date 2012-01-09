@@ -39,10 +39,10 @@ public class FriendPhotosPanel extends DataRequestPanel {
 		getPhotosPanel().displayPhotos(photos);
 	}
 	
-	public void addAlbum(final Album album) {
+	public void addAlbum(final String id, final Album album) {
 		ClickHandler clickHandler = new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				getNotesController().requestAlbumPhotos(album.getId());
+				getNotesController().requestAlbumPhotos(id, album.getId());
 			}
 		};
 		getAlbumListPanel().addAlbum(album, clickHandler);

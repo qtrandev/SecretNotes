@@ -149,14 +149,14 @@ public class NotesController implements INotesController,ValueChangeHandler<Stri
 			public void onSuccess(JavaScriptObject response) {
 				if (Util.LOG) GWT.log("Received photo request response. Showing photos.");
 				getUiHandler().setFriend(id);
-				processPhotosRequest(response);
+				processPhotosRequest(id, response);
 				requestAlbums(id);
 			}
 		}
 		getCommunicationHandler().sendUploadedPhotosRequest(id, new PictureCallback());
 	}
 	
-	private void processPhotosRequest(JavaScriptObject response) {
+	private void processPhotosRequest(String id, JavaScriptObject response) {
 		JSOModel jso = response.cast();
 		JsArray<JSOModel> photos = jso.getArray(Util.ARRAY_DATA);
 		Photo photo;
@@ -170,7 +170,7 @@ public class NotesController implements INotesController,ValueChangeHandler<Stri
 			photo = new Photo(properties);
 			photoList.add(photo);
 		}
-		getUiHandler().processUploadedPhotos(photoList);
+		getUiHandler().processUploadedPhotos(id, photoList);
 	}
 	
 	public void requestAlbums(final String id) {
@@ -196,22 +196,22 @@ public class NotesController implements INotesController,ValueChangeHandler<Stri
 			properties.put(Util.ALBUM_COVER_PHOTO_ID, albums.get(i).get(Util.ALBUM_COVER_PHOTO_ID));
 			album = new Album(properties);
 			getModelController().addAlbum(userId, album);
-			getUiHandler().addAlbum(album);
-			requestPhotoLink(album.getCoverPhotoId());
+			getUiHandler().addAlbum(userId, album);
+			requestPhotoLink(userId, album.getCoverPhotoId());
 		}
 	}
 	
-	public void requestPhotoLink(String photoId) {
+	public void requestPhotoLink(final String id, String photoId) {
 		class PhotoLinkCallback extends Callback<JavaScriptObject> {
 			public void onSuccess(JavaScriptObject response) {
 				if (Util.LOG) GWT.log("Received photo link request response. Processing photo link.");
-				processPhotoLink(response);
+				processPhotoLink(id, response);
 			}
 		}
 		getCommunicationHandler().sendPhotoRequest(photoId, new PhotoLinkCallback());
 	}
 	
-	public void processPhotoLink(JavaScriptObject response) {
+	public void processPhotoLink(String id, JavaScriptObject response) {
 		JSOModel jso = response.cast();
 		
 		HashMap<String,String> properties = new HashMap<String, String>();
@@ -222,20 +222,20 @@ public class NotesController implements INotesController,ValueChangeHandler<Stri
 		
 		Photo photo = new Photo(properties);
 		getModelController().addPhoto(photo);
-		getUiHandler().refreshPhotos(photo);
+		getUiHandler().refreshPhotos(id, photo);
 	}
 	
-	public void requestAlbumPhotos(final String albumId) {
+	public void requestAlbumPhotos(final String id, final String albumId) {
 		class AlbumPhotosCallback extends Callback<JavaScriptObject> {
 			public void onSuccess(JavaScriptObject response) {
 				if (Util.LOG) GWT.log("Received albums request response. Showing albums.");
-				processAlbumPhotosRequest(albumId, response);
+				processAlbumPhotosRequest(id, albumId, response);
 			}
 		}
 		getCommunicationHandler().sendAlbumPhotosRequest(albumId, new AlbumPhotosCallback());
 	}
 	
-	public void processAlbumPhotosRequest(String albumId, JavaScriptObject response) {
+	public void processAlbumPhotosRequest(String id, String albumId, JavaScriptObject response) {
 		JSOModel jso = response.cast();
 		JsArray<JSOModel> albums = jso.getArray(Util.ARRAY_DATA);
 
@@ -252,7 +252,7 @@ public class NotesController implements INotesController,ValueChangeHandler<Stri
 			getModelController().addPhoto(photo);
 			photos.add(photo);
 		}
-		getUiHandler().addAlbumPhotos(albumId, photos);
+		getUiHandler().addAlbumPhotos(id, albumId, photos);
 	}
 
 	public void requestNotes(final String userId) {
