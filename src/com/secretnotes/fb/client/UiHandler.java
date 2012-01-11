@@ -21,7 +21,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.secretnotes.fb.client.data.Album;
 import com.secretnotes.fb.client.data.IDataContainer;
 import com.secretnotes.fb.client.data.Photo;
-import com.secretnotes.fb.client.data.User;
+import com.secretnotes.fb.client.ui.HomePanel;
 
 public class UiHandler implements IUiHandler {
 
@@ -32,13 +32,12 @@ public class UiHandler implements IUiHandler {
 	private SimplePanel contentPanel;
 	private FlowPanel headerPanel;
 	private FlowPanel navPanel;
-	private FlowPanel homePanel;
+	private HomePanel homePanel;
 	private FriendsContainerPanel friendsContainerPanel;
 	private FriendsPanel friendsPanel;
 	private HashMap<String,FriendPhotosPanel> friendPhotosPanelMap;
 	private FlowPanel queryPanel;
 	private NotesPanel notesDisplay;
-	private HTML welcomeHtml;
 	private String currentPage = Util.PAGE_HOME;
 	private Element loadingGif;
 	
@@ -67,24 +66,11 @@ public class UiHandler implements IUiHandler {
 		loadingGif = DOM.getElementById("loadingPanel");
 		showLoading(false);
 		
-		initHomePanel();
         initQueryPanel();
         getFriendsContainerPanel().add(getFriendsPanel(), "Friends");
         getFriendsContainerPanel().setHeight("600px");
         getFriendsPanel().getElement().setId("friendsPanel");
         showHomePanel();
-	}
-	
-	private void initHomePanel() {
-		if (Util.LOG) GWT.log("Initialize default home panel.");
-		getHomePanel().clear();
-        welcomeHtml = new HTML(Util.MESSAGES.hello_basic());
-        Anchor sourceLink = new Anchor("Facebook Link");
-        sourceLink.addStyleName("sourceLink");
-        sourceLink.setTarget("blank");
-        sourceLink.setHref("http://www.facebook.com");
-        getHomePanel().add(welcomeHtml);
-        getHomePanel().add(sourceLink);
 	}
 	
 	private void initQueryPanel() {
@@ -98,10 +84,9 @@ public class UiHandler implements IUiHandler {
 
 		if (page.endsWith(Util.PAGE_HOME)) {
 			if (defaultDisplay) {
-				initHomePanel();
+				getHomePanel().showDefaultPanel();
 			} else {
-				initHomePanel();
-				populateHomePanel();
+				getHomePanel().showUserWelcomePanel(getDataContainer().getUser());
 			}
 			showHomePanel();
 		} else if (page.endsWith(Util.PAGE_FRIENDS)) {
@@ -128,7 +113,6 @@ public class UiHandler implements IUiHandler {
 			}
 			showNotesPanel();
 		} else {
-			initHomePanel();
 			showHomePanel();
 		}
 	}
@@ -160,22 +144,6 @@ public class UiHandler implements IUiHandler {
 	
 	public void showLoading(boolean show) {
 		loadingGif.getStyle().setVisibility(show?Visibility.VISIBLE:Visibility.HIDDEN);
-	}
-	
-	private void populateHomePanel() {
-		User user = getDataContainer().getUser();
-		welcomeHtml.setHTML (Util.MESSAGES.hello(user.getName()) + 
-				"ID: " + user.getUserId() + "<br>" +
-				"FIRST NAME: " + user.getFirstName() + "<br>" +
-				"LAST NAME: " + user.getLastName() + "<br>" +
-				"LINK: " + user.getLink() + "<br>" +
-				"GENDER: " + user.getGender() + "<br>" +
-				"TIMEZONE: " + user.getTimezone() + "<br>" +
-				"LOCALE: " + user.getLocale() + "<br>" +
-				"VERIFIED: " + user.getVerified() + "<br>" +
-				"UPDATED TIME: " + user.getUpdatedTime() + "<br>" +
-				"TYPE: " + user.getType()
-			);
 	}
 	
 	private FlowPanel getMainPanel() {
@@ -247,9 +215,9 @@ public class UiHandler implements IUiHandler {
 		return navPanel;
 	}
 	
-	private FlowPanel getHomePanel() {
+	private HomePanel getHomePanel() {
 		if (homePanel == null) {
-			homePanel = new FlowPanel();
+			homePanel = new HomePanel();
 		}
 		return homePanel;
 	}
