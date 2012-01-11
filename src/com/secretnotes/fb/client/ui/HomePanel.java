@@ -1,7 +1,6 @@
 package com.secretnotes.fb.client.ui;
 
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
@@ -11,7 +10,7 @@ import com.secretnotes.fb.client.data.User;
 public class HomePanel extends FlowPanel {
 	
 	private TabLayoutPanel homeContainerPanel;
-	private FlowPanel welcomePanel;
+	private WelcomePanel welcomePanel;
 	
 	public HomePanel() {
 		super();
@@ -40,16 +39,9 @@ public class HomePanel extends FlowPanel {
 		return homeContainerPanel;
 	}
 	
-	private FlowPanel getWelcomePanel() {
+	private WelcomePanel getWelcomePanel() {
 		if (welcomePanel == null) {
-			welcomePanel = new FlowPanel();
-	        HTML welcomeHtml = new HTML(Util.MESSAGES.hello_basic());
-	        Anchor sourceLink = new Anchor("Facebook Link");
-	        sourceLink.addStyleName("sourceLink");
-	        sourceLink.setTarget("blank");
-	        sourceLink.setHref("http://www.facebook.com");
-	        welcomePanel.add(welcomeHtml);
-	        welcomePanel.add(sourceLink);
+			welcomePanel = new WelcomePanel();
 		}
 		return welcomePanel;
 	}
