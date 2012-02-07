@@ -4,10 +4,12 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.secretnotes.fb.client.data.DataContainer;
 import com.secretnotes.fb.client.data.IDataContainer;
+import com.secretnotes.fb.client.ui.WelcomeResource;
 
 public class SecretNotes implements EntryPoint {
 
 	public void onModuleLoad() {
+		GWT.<WelcomeResource>create(WelcomeResource.class).style().ensureInjected();
 		IDataContainer dataContainer = new DataContainer();
 		ICommunicationHandler communicationHandler = new CommunicationHandler();
 		IUiHandler uiHandler = new UiHandler(dataContainer);

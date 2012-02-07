@@ -1,0 +1,27 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+	
+	<ui:style>
+		.welcomeHeader { color: blue; }
+	</ui:style>
+	
+	<ui:style field='buttonStyle'>
+		.blue { background-color: Skyblue; }
+	</ui:style>
+	
+	<ui:style field='newr' type='com.secretnotes.fb.client.ui.WelcomeContent.MyStyle'>
+		.redBox { background-color:pink; border: 1px solid red; }
+		.enabled { color:black; }
+		.disabled { color:gray; }
+	</ui:style>
+	
+	<g:HTMLPanel>
+	<div class='{style.welcomeHeader}'>
+		Welcome to the Secret Notes app!
+	</div>
+	<g:PushButton styleName='{buttonStyle.blue}'>Login</g:PushButton>
+	<div class='{newr.redBox} {newr.disabled}'>I'm a red box widget.</div>
+	</g:HTMLPanel>
+
+</ui:UiBinder>
+	
