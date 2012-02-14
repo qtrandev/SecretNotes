@@ -2,11 +2,32 @@
 	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
 	
 	<ui:style>
-		.welcomeHeader { color: blue; }
+		.welcomeHeader {
+			font-size: 2em;
+			color: blue;
+			margin-left: 50px;
+		}
+		.subHeader { 
+			font-size: 2em;
+			color: blue;
+			margin-left: 100px;
+		}
+		.subHeaderText { 
+			color: blue;
+			margin-left: 150px;
+		}
+		.text { 
+			color: blue;
+			margin-left: 100px;
+		}
+		.button { 
+			float: none;
+			margin-left: 100px;
+		}
 	</ui:style>
 	
 	<ui:style field='buttonStyle'>
-		.blue { background-color: Skyblue; }
+		.button { background-color: Skyblue; }
 	</ui:style>
 	
 	<ui:style field='newr' type='com.secretnotes.fb.client.ui.WelcomeContent.MyStyle'>
@@ -16,11 +37,25 @@
 	</ui:style>
 	
 	<g:HTMLPanel>
-	<div class='{style.welcomeHeader}'>
-		Welcome to the Secret Notes app!
+	<div class='{style.welcomeHeader}'>Welcome to the Secret Notes app!</div>
+	<div class='{style.text}'>
+		This is a project to view Facebook photos and store notes on friends.
 	</div>
-	<g:PushButton styleName='{buttonStyle.blue}'>Login</g:PushButton>
-	<div class='{newr.redBox} {newr.disabled}'>I'm a red box widget.</div>
+	<div class='{style.welcomeHeader}'>Features</div>
+		<div class='{style.subHeader}'>Photo Viewer</div>
+			<div class='{style.subHeaderText}'>
+			An alternative to Facebook's photo viewer to view photos of your friends.
+			</div>
+		<div class='{style.subHeader}'>Set Secret Notes on Friends</div>
+			<div class='{style.subHeaderText}'>
+			Set notes on each friend's profile that only you will have access to.
+			</div>
+	<div class='{style.welcomeHeader}'>Privacy</div>
+	<div class='{style.text}'>
+		We do not collect or store any personal data. We just need basic permissions in order to find and display photos of your friends.
+	</div>
+	<div class='{style.welcomeHeader}'>Login to start!</div>
+<!-- 		<div class='{style.button}'><g:PushButton>Login</g:PushButton></div> -->
 	</g:HTMLPanel>
 
 </ui:UiBinder>
