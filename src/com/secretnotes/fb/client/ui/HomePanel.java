@@ -47,20 +47,7 @@ public class HomePanel extends FlowPanel {
 	}
 	
 	private FlowPanel createUserWelcomePanel(User user) {
-		FlowPanel userWelcomePanel = new FlowPanel();
-		HTML welcomeHTML = new HTML(Util.MESSAGES.hello(user.getName()) + 
-				"ID: " + user.getUserId() + "<br>" +
-				"FIRST NAME: " + user.getFirstName() + "<br>" +
-				"LAST NAME: " + user.getLastName() + "<br>" +
-				"LINK: " + user.getLink() + "<br>" +
-				"GENDER: " + user.getGender() + "<br>" +
-				"TIMEZONE: " + user.getTimezone() + "<br>" +
-				"LOCALE: " + user.getLocale() + "<br>" +
-				"VERIFIED: " + user.getVerified() + "<br>" +
-				"UPDATED TIME: " + user.getUpdatedTime() + "<br>" +
-				"TYPE: " + user.getType()
-			);
-		userWelcomePanel.add(welcomeHTML);
+		UserWelcomePanel userWelcomePanel  = new UserWelcomePanel(user);
 		return userWelcomePanel;
 	}
 }
