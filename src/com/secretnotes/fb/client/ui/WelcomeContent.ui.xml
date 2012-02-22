@@ -4,20 +4,20 @@
 	<ui:style>
 		.welcomeHeader {
 			font-size: 2em;
-			color: blue;
+			color: #1144ff;
 			margin-left: 50px;
 		}
 		.subHeader { 
-			font-size: 2em;
-			color: blue;
+			font-size: 1.5em;
+			color: #222277;
 			margin-left: 100px;
 		}
 		.subHeaderText { 
-			color: blue;
+			color: #998866;
 			margin-left: 150px;
 		}
 		.text { 
-			color: blue;
+			color: #998866;
 			margin-left: 100px;
 		}
 		.button { 
