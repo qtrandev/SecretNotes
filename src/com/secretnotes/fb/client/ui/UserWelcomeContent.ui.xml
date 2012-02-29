@@ -23,6 +23,7 @@
 	</ui:style>
 	
 	<g:HTMLPanel>
+	<div class='{style.welcomeHeader}'><span ui:field='pictureSpan'/></div>
 	<div class='{style.welcomeHeader}'>ID</div>
 		<div class='{style.text}'><span ui:field='idSpan'/></div>
 	<div class='{style.welcomeHeader}'>FIRST NAME</div>

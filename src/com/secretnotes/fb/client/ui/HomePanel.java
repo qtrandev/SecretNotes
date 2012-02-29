@@ -48,6 +48,7 @@ public class HomePanel extends FlowPanel {
 	
 	private FlowPanel createUserWelcomePanel(User user) {
 		UserWelcomePanel userWelcomePanel  = new UserWelcomePanel(user);
+		userWelcomePanel.getElement().setId("userWelcomePanel");
 		return userWelcomePanel;
 	}
 }
