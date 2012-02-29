@@ -41,8 +41,6 @@
 		<div class='{style.text}'><span ui:field='verifiedSpan'/></div>
 	<div class='{style.welcomeHeader}'>UPDATED TIME</div>
 		<div class='{style.text}'><span ui:field='updatedTimeSpan'/></div>
-	<div class='{style.welcomeHeader}'>TYPE</div>
-		<div class='{style.text}'><span ui:field='typeSpan'/></div>
 	</g:HTMLPanel>
 
 </ui:UiBinder>

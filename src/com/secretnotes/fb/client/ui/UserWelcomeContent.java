@@ -22,7 +22,6 @@ public class UserWelcomeContent extends Composite {
 	@UiField SpanElement localeSpan;
 	@UiField SpanElement verifiedSpan;
 	@UiField SpanElement updatedTimeSpan;
-	@UiField SpanElement typeSpan;
 	
 	public UserWelcomeContent(User user) {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -35,7 +34,6 @@ public class UserWelcomeContent extends Composite {
 		localeSpan.setInnerText(user.getLocale());
 		verifiedSpan.setInnerText(user.getVerified());
 		updatedTimeSpan.setInnerText(user.getUpdatedTime());
-		typeSpan.setInnerText(user.getType());
 	}
 }
 
