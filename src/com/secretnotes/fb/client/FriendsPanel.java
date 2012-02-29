@@ -15,6 +15,7 @@ import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.secretnotes.fb.client.data.User;
+import com.secretnotes.fb.client.ui.PhotoWelcomeContent;
 
 public class FriendsPanel extends DataRequestPanel {
 	
@@ -27,20 +28,21 @@ public class FriendsPanel extends DataRequestPanel {
 	
 	public void initFriendsPanel() {
 		clear();
-		add(new HTML(Util.MESSAGES.page_welcome("Friends")));
-		add(new HTML("Nothing here yet"));
-		add(new HTML("<hr/>More to come"));
-		
-		MultiWordSuggestOracle oracle = new MultiWordSuggestOracle();
-		oracle.add("Test User");
-		oracle.add("Adam Apple");
-		oracle.add("Adam Bonnie");
-		oracle.add("Bonnie Clyde");
-		oracle.add("Barry Clyde");
-		oracle.add("Bo Clyde");
-		SuggestBox box = new SuggestBox(oracle);
-		add(box);
-		box.setFocus(true);
+		add(new PhotoWelcomeContent());
+//		add(new HTML(Util.MESSAGES.page_welcome("Friends")));
+//		add(new HTML("Nothing here yet"));
+//		add(new HTML("<hr/>More to come"));
+//		
+//		MultiWordSuggestOracle oracle = new MultiWordSuggestOracle();
+//		oracle.add("Test User");
+//		oracle.add("Adam Apple");
+//		oracle.add("Adam Bonnie");
+//		oracle.add("Bonnie Clyde");
+//		oracle.add("Barry Clyde");
+//		oracle.add("Bo Clyde");
+//		SuggestBox box = new SuggestBox(oracle);
+//		add(box);
+//		box.setFocus(true);
 	}
 	
 	public void showInProgress() {
