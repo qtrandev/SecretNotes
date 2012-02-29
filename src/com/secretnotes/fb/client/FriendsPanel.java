@@ -53,7 +53,7 @@ public class FriendsPanel extends DataRequestPanel {
 		if (Util.LOG) GWT.log("Entered displayLoggedInFriendsPanel()");
 		clear();
 		User currentUser = getNotesController().getUser();
-		add(new HTML("Hi "+currentUser.getFirstName()+"! Type a friend's name in the box."));
+		add(new HTML("Hi "+currentUser.getFirstName()+"!"));
 		add(new Image(currentUser.getProfilePic()));
 		MultiWordSuggestOracle oracle = new MultiWordSuggestOracle ();
 		SuggestBox box = new SuggestBox(oracle);
