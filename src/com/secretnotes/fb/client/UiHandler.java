@@ -22,6 +22,7 @@ import com.secretnotes.fb.client.data.Album;
 import com.secretnotes.fb.client.data.IDataContainer;
 import com.secretnotes.fb.client.data.Photo;
 import com.secretnotes.fb.client.ui.HomePanel;
+import com.secretnotes.fb.client.ui.QueryWelcomeContent;
 
 public class UiHandler implements IUiHandler {
 
@@ -74,9 +75,7 @@ public class UiHandler implements IUiHandler {
 	}
 	
 	private void initQueryPanel() {
-		getQueryPanel().add(new HTML(Util.MESSAGES.page_welcome("Query")));
-		getQueryPanel().add(new HTML("Nothing here yet"));
-		getQueryPanel().add(new HTML("<hr/>More to come"));
+		getQueryPanel().add(new QueryWelcomeContent());
 	}
 	
 	public void showPage(String page, boolean defaultDisplay) {
