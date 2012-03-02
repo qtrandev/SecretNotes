@@ -9,7 +9,7 @@
 		}
 		.subHeader { 
 			font-size: 1.5em;
-			color: #222277;
+			color: #1144ff;
 			margin-left: 100px;
 		}
 		.subHeaderText { 
