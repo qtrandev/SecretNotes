@@ -24,6 +24,7 @@ import com.secretnotes.fb.client.data.Photo;
 import com.secretnotes.fb.client.ui.AboutPanel;
 import com.secretnotes.fb.client.ui.HomePanel;
 import com.secretnotes.fb.client.ui.QueryWelcomeContent;
+import com.secretnotes.fb.client.ui.SandboxPanel;
 
 public class UiHandler implements IUiHandler {
 
@@ -38,7 +39,7 @@ public class UiHandler implements IUiHandler {
 	private FriendsContainerPanel friendsContainerPanel;
 	private FriendsPanel friendsPanel;
 	private HashMap<String,FriendPhotosPanel> friendPhotosPanelMap;
-	private FlowPanel queryPanel;
+	private SandboxPanel sandboxPanel;
 	private AboutPanel aboutPanel;
 	private NotesPanel notesDisplay;
 	private String currentPage = Util.PAGE_HOME;
@@ -69,15 +70,10 @@ public class UiHandler implements IUiHandler {
 		loadingGif = DOM.getElementById("loadingPanel");
 		showLoading(false);
 		
-        initQueryPanel();
         getFriendsContainerPanel().add(getFriendsPanel(), "Friends");
         getFriendsContainerPanel().setHeight("600px");
         getFriendsPanel().getElement().setId("friendsPanel");
         showHomePanel();
-	}
-	
-	private void initQueryPanel() {
-		getQueryPanel().add(new QueryWelcomeContent());
 	}
 	
 	public void showPage(String page, boolean defaultDisplay) {
@@ -98,7 +94,7 @@ public class UiHandler implements IUiHandler {
 				getFriendsPanel().displayLoggedInFriendsPanel();
 			}
 		} else if (page.endsWith(Util.PAGE_QUERY)) {
-			showQueryPanel();
+			showSandboxPanel();
 		} else if (page.endsWith(Util.PAGE_ABOUT)) {
 			showAboutPanel();
 		} else if (page.endsWith(Util.PAGE_NOTES)) {
@@ -136,9 +132,9 @@ public class UiHandler implements IUiHandler {
 		getFriendsContainerPanel().selectTab(getFriendsPanel());
 	}
 	
-	private void showQueryPanel() {
+	private void showSandboxPanel() {
 		setCurrentPage(Util.PAGE_QUERY);
-		getContentPanel().setWidget(getQueryPanel());
+		getContentPanel().setWidget(getSandboxPanel());
 	}
 	
 	private void showAboutPanel() {
@@ -256,11 +252,11 @@ public class UiHandler implements IUiHandler {
 		return friendPhotosPanelMap;
 	}
 	
-	private FlowPanel getQueryPanel() {
-		if (queryPanel == null) {
-			queryPanel = new FlowPanel();
+	private SandboxPanel getSandboxPanel() {
+		if (sandboxPanel == null) {
+			sandboxPanel = new SandboxPanel();
 		}
-		return queryPanel;
+		return sandboxPanel;
 	}
 	
 	private AboutPanel getAboutPanel() {
