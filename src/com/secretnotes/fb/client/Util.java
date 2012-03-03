@@ -13,6 +13,7 @@ public class Util {
 	public static final String PAGE_FRIENDS = "friends";
 	public static final String PAGE_NOTES = "notes";
 	public static final String PAGE_QUERY = "query";
+	public static final String PAGE_ABOUT = "about";
 	
 	// Connascence of Name problem - changing this means changing constants files and updating stored DB values
 	public static final String[] NOTES_CATEGORY = new String[] {

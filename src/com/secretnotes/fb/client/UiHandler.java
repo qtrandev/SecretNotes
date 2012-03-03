@@ -38,6 +38,7 @@ public class UiHandler implements IUiHandler {
 	private FriendsPanel friendsPanel;
 	private HashMap<String,FriendPhotosPanel> friendPhotosPanelMap;
 	private FlowPanel queryPanel;
+	private FlowPanel aboutPanel;
 	private NotesPanel notesDisplay;
 	private String currentPage = Util.PAGE_HOME;
 	private Element loadingGif;
@@ -68,6 +69,7 @@ public class UiHandler implements IUiHandler {
 		showLoading(false);
 		
         initQueryPanel();
+        initAboutPanel();
         getFriendsContainerPanel().add(getFriendsPanel(), "Friends");
         getFriendsContainerPanel().setHeight("600px");
         getFriendsPanel().getElement().setId("friendsPanel");
@@ -76,6 +78,10 @@ public class UiHandler implements IUiHandler {
 	
 	private void initQueryPanel() {
 		getQueryPanel().add(new QueryWelcomeContent());
+	}
+	
+	private void initAboutPanel() {
+		getAboutPanel().add(new QueryWelcomeContent());
 	}
 	
 	public void showPage(String page, boolean defaultDisplay) {
@@ -97,6 +103,8 @@ public class UiHandler implements IUiHandler {
 			}
 		} else if (page.endsWith(Util.PAGE_QUERY)) {
 			showQueryPanel();
+		} else if (page.endsWith(Util.PAGE_ABOUT)) {
+			showAboutPanel();
 		} else if (page.endsWith(Util.PAGE_NOTES)) {
 			if (defaultDisplay) {
 				getNotesDisplay().initPanels();
@@ -135,6 +143,11 @@ public class UiHandler implements IUiHandler {
 	private void showQueryPanel() {
 		setCurrentPage(Util.PAGE_QUERY);
 		getContentPanel().setWidget(getQueryPanel());
+	}
+	
+	private void showAboutPanel() {
+		setCurrentPage(Util.PAGE_ABOUT);
+		getContentPanel().setWidget(getAboutPanel());
 	}
 	
 	public void showInProgressText() {
@@ -206,10 +219,15 @@ public class UiHandler implements IUiHandler {
 			queryLink.setHref("#"+Util.PAGE_QUERY);
 			queryLink.getElement().setId("queryLink");
 			
+			Anchor aboutLink = new Anchor();
+			aboutLink.setHref("#"+Util.PAGE_ABOUT);
+			aboutLink.getElement().setId("aboutLink");
+			
 			navPanel.add(homeLink);
 			navPanel.add(friendsLink);
 			navPanel.add(notesLink);
 			navPanel.add(queryLink);
+			navPanel.add(aboutLink);
 		}
 		return navPanel;
 	}
@@ -247,6 +265,13 @@ public class UiHandler implements IUiHandler {
 			queryPanel = new FlowPanel();
 		}
 		return queryPanel;
+	}
+	
+	private FlowPanel getAboutPanel() {
+		if (aboutPanel == null) {
+			aboutPanel = new FlowPanel();
+		}
+		return aboutPanel;
 	}
 	
 	private NotesPanel getNotesDisplay() {
