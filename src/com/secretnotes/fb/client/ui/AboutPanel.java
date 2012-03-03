@@ -7,21 +7,20 @@ import com.google.gwt.user.client.ui.TabLayoutPanel;
 public class AboutPanel extends FlowPanel {
 	
 	private TabLayoutPanel aboutContainerPanel;
-	private FlowPanel aboutPanel;
+	private FlowPanel projectPanel;
+	private FlowPanel developerPanel;
+	private FlowPanel resourcePanel;
 	
 	public AboutPanel() {
 		super();
-		initHomePanel();
+		initAboutPanel();
 	}
 	
-	private void initHomePanel() {
+	private void initAboutPanel() {
 		add(getAboutContainerPanel());
-		showDefaultPanel();
-	}
-	
-	public void showDefaultPanel() {
-		getAboutContainerPanel().clear();
-		getAboutContainerPanel().add(getAboutPanel(), "About");
+		getAboutContainerPanel().add(getProjectPanel(), "Project");
+		getAboutContainerPanel().add(getDeveloperPanel(), "Developer");
+		getAboutContainerPanel().add(getResourcePanel(), "Resources");
 	}
 	
 	private TabLayoutPanel getAboutContainerPanel() {
@@ -32,11 +31,27 @@ public class AboutPanel extends FlowPanel {
 		return aboutContainerPanel;
 	}
 	
-	private FlowPanel getAboutPanel() {
-		if (aboutPanel == null) {
-			aboutPanel = new FlowPanel();
-			aboutPanel.add(new QueryWelcomeContent());
+	private FlowPanel getProjectPanel() {
+		if (projectPanel == null) {
+			projectPanel = new FlowPanel();
+			projectPanel.add(new QueryWelcomeContent());
 		}
-		return aboutPanel;
+		return projectPanel;
+	}
+	
+	private FlowPanel getDeveloperPanel() {
+		if (developerPanel == null) {
+			developerPanel = new FlowPanel();
+			developerPanel.add(new QueryWelcomeContent());
+		}
+		return developerPanel;
+	}
+	
+	private FlowPanel getResourcePanel() {
+		if (resourcePanel == null) {
+			resourcePanel = new FlowPanel();
+			resourcePanel.add(new QueryWelcomeContent());
+		}
+		return resourcePanel;
 	}
 }
