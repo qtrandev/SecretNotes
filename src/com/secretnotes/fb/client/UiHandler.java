@@ -21,6 +21,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.secretnotes.fb.client.data.Album;
 import com.secretnotes.fb.client.data.IDataContainer;
 import com.secretnotes.fb.client.data.Photo;
+import com.secretnotes.fb.client.ui.AboutPanel;
 import com.secretnotes.fb.client.ui.HomePanel;
 import com.secretnotes.fb.client.ui.QueryWelcomeContent;
 
@@ -38,7 +39,7 @@ public class UiHandler implements IUiHandler {
 	private FriendsPanel friendsPanel;
 	private HashMap<String,FriendPhotosPanel> friendPhotosPanelMap;
 	private FlowPanel queryPanel;
-	private FlowPanel aboutPanel;
+	private AboutPanel aboutPanel;
 	private NotesPanel notesDisplay;
 	private String currentPage = Util.PAGE_HOME;
 	private Element loadingGif;
@@ -69,7 +70,6 @@ public class UiHandler implements IUiHandler {
 		showLoading(false);
 		
         initQueryPanel();
-        initAboutPanel();
         getFriendsContainerPanel().add(getFriendsPanel(), "Friends");
         getFriendsContainerPanel().setHeight("600px");
         getFriendsPanel().getElement().setId("friendsPanel");
@@ -78,10 +78,6 @@ public class UiHandler implements IUiHandler {
 	
 	private void initQueryPanel() {
 		getQueryPanel().add(new QueryWelcomeContent());
-	}
-	
-	private void initAboutPanel() {
-		getAboutPanel().add(new QueryWelcomeContent());
 	}
 	
 	public void showPage(String page, boolean defaultDisplay) {
@@ -267,9 +263,9 @@ public class UiHandler implements IUiHandler {
 		return queryPanel;
 	}
 	
-	private FlowPanel getAboutPanel() {
+	private AboutPanel getAboutPanel() {
 		if (aboutPanel == null) {
-			aboutPanel = new FlowPanel();
+			aboutPanel = new AboutPanel();
 		}
 		return aboutPanel;
 	}
