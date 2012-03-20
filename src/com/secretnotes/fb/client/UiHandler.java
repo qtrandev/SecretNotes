@@ -99,9 +99,10 @@ public class UiHandler implements IUiHandler {
 			showAboutPanel();
 		} else if (page.endsWith(Util.PAGE_NOTES)) {
 			if (defaultDisplay) {
-				getNotesDisplay().initPanels();
+				getNotesDisplay().showNotesWelcomePanel();
 			}
 			else {
+				getNotesDisplay().initPanels();
 				getNotesDisplay().refreshPanel();
 				getNotesController().requestNotes(getDataContainer().getUser().getUserId());
 				int i=0;

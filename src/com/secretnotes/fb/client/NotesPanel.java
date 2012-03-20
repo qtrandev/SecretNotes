@@ -12,6 +12,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.secretnotes.fb.client.data.User;
+import com.secretnotes.fb.client.ui.NotesWelcomeContent;
 
 public class NotesPanel extends Composite implements DataRequester {
 	
@@ -36,6 +37,11 @@ public class NotesPanel extends Composite implements DataRequester {
 		this.notesController = notesController;
 		initPanels();
 		initWidget(getStackPanel());
+	}
+	
+	public void showNotesWelcomePanel() {
+		getStackPanel().clear();
+		getStackPanel().add(new NotesWelcomeContent());
 	}
 	
 	public void initPanels() {
