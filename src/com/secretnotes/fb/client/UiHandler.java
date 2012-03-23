@@ -12,7 +12,6 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -23,7 +22,7 @@ import com.secretnotes.fb.client.data.IDataContainer;
 import com.secretnotes.fb.client.data.Photo;
 import com.secretnotes.fb.client.ui.AboutPanel;
 import com.secretnotes.fb.client.ui.HomePanel;
-import com.secretnotes.fb.client.ui.QueryWelcomeContent;
+import com.secretnotes.fb.client.ui.NotesContainerPanel;
 import com.secretnotes.fb.client.ui.SandboxPanel;
 
 public class UiHandler implements IUiHandler {
@@ -41,7 +40,7 @@ public class UiHandler implements IUiHandler {
 	private HashMap<String,FriendPhotosPanel> friendPhotosPanelMap;
 	private SandboxPanel sandboxPanel;
 	private AboutPanel aboutPanel;
-	private NotesPanel notesDisplay;
+	private NotesContainerPanel notesDisplay;
 	private String currentPage = Util.PAGE_HOME;
 	private Element loadingGif;
 	
@@ -99,10 +98,9 @@ public class UiHandler implements IUiHandler {
 			showAboutPanel();
 		} else if (page.endsWith(Util.PAGE_NOTES)) {
 			if (defaultDisplay) {
-				getNotesDisplay().showNotesWelcomePanel();
+				getNotesDisplay().showDefaultPanel();
 			}
 			else {
-				getNotesDisplay().initPanels();
 				getNotesDisplay().refreshPanel();
 				getNotesController().requestNotes(getDataContainer().getUser().getUserId());
 				int i=0;
@@ -267,9 +265,9 @@ public class UiHandler implements IUiHandler {
 		return aboutPanel;
 	}
 	
-	private NotesPanel getNotesDisplay() {
+	private NotesContainerPanel getNotesDisplay() {
 		if (notesDisplay == null) {
-			notesDisplay = new NotesPanel(getNotesController());
+			notesDisplay = new NotesContainerPanel(getNotesController());
 		}
 		return notesDisplay;
 	}

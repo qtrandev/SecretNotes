@@ -74,9 +74,9 @@ public class NotesPanel extends Composite implements DataRequester {
 		profileHeading.setStyleName("notes_heading");
 		notesHeading.setStyleName("notes_heading");
 		friendsHeading.setStyleName("notes_heading");
-		getProfilePanel().setStyleName("notes_panel");
-		getNotesPanel().setStyleName("notes_panel");
-		getFriendsPanel().setStyleName("notes_panel");
+		getProfilePanel().setStyleName("notes_panel_style");
+		getStackPanel().setStyleName("notes_panel");
+		getFriendsPanel().setStyleName("notes_panel_style");
 	}
 	
 	private void initProfilePanel() {
