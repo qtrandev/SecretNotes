@@ -157,8 +157,10 @@ public class NotesController implements INotesController,ValueChangeHandler<Stri
 				getUiHandler().setFriend(id);
 				processPhotosRequest(id, response);
 				requestAlbums(id);
+				getUiHandler().showLoading(false);
 			}
 		}
+		getUiHandler().showLoading(true);
 		getCommunicationHandler().sendUploadedPhotosRequest(id, new PictureCallback());
 	}
 	
@@ -184,8 +186,10 @@ public class NotesController implements INotesController,ValueChangeHandler<Stri
 			public void onSuccess(JavaScriptObject response) {
 				if (Util.LOG) GWT.log("Received albums request response. Showing albums.");
 				processAlbumsRequest(id, response);
+				getUiHandler().showLoading(false);
 			}
 		}
+		getUiHandler().showLoading(true);
 		getCommunicationHandler().sendAlbumsRequest(id, new AlbumCallback());
 	}
 	
@@ -212,8 +216,10 @@ public class NotesController implements INotesController,ValueChangeHandler<Stri
 			public void onSuccess(JavaScriptObject response) {
 				if (Util.LOG) GWT.log("Received photo link request response. Processing photo link.");
 				processPhotoLink(id, response);
+				getUiHandler().showLoading(false);
 			}
 		}
+		getUiHandler().showLoading(true);
 		getCommunicationHandler().sendPhotoRequest(photoId, new PhotoLinkCallback());
 	}
 	
