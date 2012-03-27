@@ -10,6 +10,7 @@ public interface INotesController {
 	public void persistNotes(HashMap<String, String[]> userNotesMap, HashMap<String, String> userNamesMap, String ownerId);
 	public void requestNotes(String userId);
 	public void requestPhotos(String userId);
+	public void requestRandomFriendPhotos();
 	public void requestAlbums(String userId);
 	public void requestPhotoLink(String id, String photoId);
 	public void requestAlbumPhotos(String id, String albumId);

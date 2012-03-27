@@ -144,6 +144,12 @@ public class NotesController implements INotesController,ValueChangeHandler<Stri
 		}
 	}
 	
+	public void requestRandomFriendPhotos() {
+		ArrayList<String> friendUserIds = getModelController().getFriendUserIds();
+		int randomIndex = (int)Math.round((Math.random()*(friendUserIds.size()-1)));
+		requestPhotos(friendUserIds.get(randomIndex));
+	}
+	
 	public void requestPhotos(final String id) {
 		class PictureCallback extends Callback<JavaScriptObject> {
 			public void onSuccess(JavaScriptObject response) {

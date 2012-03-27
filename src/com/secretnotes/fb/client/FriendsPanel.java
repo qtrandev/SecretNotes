@@ -57,6 +57,14 @@ public class FriendsPanel extends DataRequestPanel {
 		User currentUser = getNotesController().getUser();
 		add(new HTML("Hi "+currentUser.getFirstName()+"!"));
 		add(new Image(currentUser.getProfilePic()));
+		Image randomButton = new Image("button_random_friend.png");
+		randomButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				showRandomFriend();
+			}
+		});
+		randomButton.getElement().setId("linkButton");
+		add(randomButton);
 		MultiWordSuggestOracle oracle = new MultiWordSuggestOracle ();
 		SuggestBox box = new SuggestBox(oracle);
 		box.addSelectionHandler(new SelectionHandler<Suggestion>() {
@@ -100,6 +108,10 @@ public class FriendsPanel extends DataRequestPanel {
 	private String lookUpId(String name) {
 		String id = getNotesController().getIdFromName(name);
 		return id;
+	}
+	
+	private void showRandomFriend() {
+		getNotesController().requestRandomFriendPhotos();
 	}
 	
 	private FlowPanel getFriendLinksPanel() {
