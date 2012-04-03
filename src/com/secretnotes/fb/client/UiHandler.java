@@ -88,6 +88,7 @@ public class UiHandler implements IUiHandler {
 		} else if (page.endsWith(Util.PAGE_FRIENDS)) {
 			showFriendsPanel();
 			if (defaultDisplay) {
+				closeAllFriendTabs();
 				getFriendsPanel().initFriendsPanel();
 			} else {
 				getFriendsPanel().displayLoggedInFriendsPanel();
@@ -329,6 +330,20 @@ public class UiHandler implements IUiHandler {
 	private void closeTab(String id) {
 		getFriendsContainerPanel().remove(getFriendPhotosPanel(id));
 		getFriendPhotosPanelMap().remove(id);
+	}
+	
+	private void closeAllFriendTabs() {
+		//Go through each friend photo panel and close
+		if (getFriendPhotosPanelMap().size() > 0) {
+			//Put ids into separate list - exception occurs if do not do this
+			ArrayList<String> savedIds = new ArrayList<String>();
+			for (String id : getFriendPhotosPanelMap().keySet()) {
+				savedIds.add(id);
+			}
+			for (String savedId : savedIds) {
+				closeTab(savedId);
+			}
+		}
 	}
 	
 	private class TabCloseHeader extends FlowPanel {
