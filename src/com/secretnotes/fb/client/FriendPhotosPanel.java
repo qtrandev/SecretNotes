@@ -58,9 +58,8 @@ public class FriendPhotosPanel extends DataRequestPanel {
 		photoListPanel.setStyleName("photoListPanel");
 		photoListPanel.setDisplayTitle(album.getName());
 		photoListPanel.displayPhotos(photos);
-		//Keep the next album displayed photos on top
-		int albumListIndex = getWidgetIndex(getAlbumListPanel());
-		insert(photoListPanel, albumListIndex+1);
+		add(photoListPanel);
+		photoListPanel.getElement().scrollIntoView();
 	}
 	
 	public void resetPanel() {
