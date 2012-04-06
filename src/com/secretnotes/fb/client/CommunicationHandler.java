@@ -15,6 +15,10 @@ public class CommunicationHandler implements ICommunicationHandler {
 	private boolean xfbml;
 	private boolean cookie;
 	
+	private static int PHOTO_UPLOAD_LIMIT = 25;
+	private static int ALBUM_LIMIT = 25;
+	private static int PHOTO_ALBUM_LIMIT = 100;
+	
 	public CommunicationHandler() {
 		fbCore = GWT.create(FBCore.class);
 		fbEvent = GWT.create(FBEvent.class);
@@ -77,11 +81,11 @@ public class CommunicationHandler implements ICommunicationHandler {
 	}
 	
 	public void sendUploadedPhotosRequest(String userId, AsyncCallback<JavaScriptObject> callback) {
-		sendRequest("/" +userId+ "/photos", callback);
+		sendRequest("/" +userId+ "/photos?limit="+PHOTO_UPLOAD_LIMIT, callback);
 	}
 	
 	public void sendAlbumsRequest(String userId, AsyncCallback<JavaScriptObject> callback) {
-		sendRequest("/" +userId+ "/albums", callback);
+		sendRequest("/" +userId+ "/albums?limit="+ALBUM_LIMIT, callback);
 	}
 	
 	public void sendPhotoRequest(String photoId, AsyncCallback<JavaScriptObject> callback) {
@@ -89,6 +93,6 @@ public class CommunicationHandler implements ICommunicationHandler {
 	}
 	
 	public void sendAlbumPhotosRequest(String albumId, AsyncCallback<JavaScriptObject> callback) {
-		sendRequest("/" +albumId+ "/photos", callback);
+		sendRequest("/" +albumId+ "/photos?limit="+PHOTO_ALBUM_LIMIT, callback);
 	}
 }
