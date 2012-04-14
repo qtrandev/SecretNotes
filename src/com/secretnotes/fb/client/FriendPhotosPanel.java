@@ -17,6 +17,7 @@ public class FriendPhotosPanel extends DataRequestPanel {
 	private String title;
 	private AlbumListPanel albumListPanel;
 	private PhotoListPanel photosPanel;
+	private PhotoListPanel taggedPhotosPanel;
 	private User currentFriend;
 	private Label friendNameLabel;
 	private Anchor photoLink;
@@ -42,6 +43,10 @@ public class FriendPhotosPanel extends DataRequestPanel {
 		getPhotoLink().setText(link);
 		getPhotoLink().setHref(link);
 		getPhotosPanel().displayPhotos(photos);
+	}
+	
+	public void processTaggedPhotos(ArrayList<Photo> photos) {
+		getTaggedPhotosPanel().displayPhotos(photos);
 	}
 	
 	public void addAlbum(final String id, final Album album) {
@@ -73,6 +78,8 @@ public class FriendPhotosPanel extends DataRequestPanel {
 		add(getPhotoLink());
 		getPhotosPanel().resetPanel();
 		add(getPhotosPanel());
+		getTaggedPhotosPanel().resetPanel();
+		add(getTaggedPhotosPanel());
 		getAlbumListPanel().resetPanel();
 		add(getAlbumListPanel());
 	}
@@ -88,6 +95,15 @@ public class FriendPhotosPanel extends DataRequestPanel {
 			photosPanel.setDisplayTitle("Uploaded Photos");
 		}
 		return photosPanel;
+	}
+	
+	private PhotoListPanel getTaggedPhotosPanel() {
+		if (taggedPhotosPanel == null) {
+			taggedPhotosPanel = new PhotoListPanel();
+			taggedPhotosPanel.setStyleName("photoListPanel");
+			taggedPhotosPanel.setDisplayTitle("Tagged Photos");
+		}
+		return taggedPhotosPanel;
 	}
 	
 	private AlbumListPanel getAlbumListPanel() {

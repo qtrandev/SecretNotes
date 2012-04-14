@@ -278,8 +278,18 @@ public class UiHandler implements IUiHandler {
 	}
 	
 	private String getLoginHTML() {
-		return "<fb:login-button autologoutlink='true' "+
-			"scope='publish_stream,read_stream,user_photos,friends_photos'></fb:login-button>";
+		StringBuilder sb = new StringBuilder();
+		sb.append("<fb:login-button autologoutlink='true'");
+		sb.append(" scope='");
+		sb.append("publish_stream,");
+		sb.append("read_stream,");
+		sb.append("user_photos,");
+		sb.append("friends_photos,");
+		sb.append("user_photo_video_tags,");
+		sb.append("friends_photo_video_tags");
+		sb.append("'");
+		sb.append("></fb:login-button>");
+		return sb.toString();
 	}
 	
 	public void setFriend(String id) {
@@ -288,6 +298,10 @@ public class UiHandler implements IUiHandler {
 	
 	public void processUploadedPhotos(String id, ArrayList<Photo> photos) {
 		getFriendPhotosPanel(id).processUploadedPhotos(photos);
+	}
+	
+	public void processTaggedPhotos(String id, ArrayList<Photo> photos) {
+		getFriendPhotosPanel(id).processTaggedPhotos(photos);
 	}
 	
 	public void addAlbum(String id, Album album) {

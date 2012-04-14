@@ -13,6 +13,7 @@ public interface IUiHandler {
 	public void showLoading(boolean show);
 	public void setFriend(String id);
 	public void processUploadedPhotos(String id, ArrayList<Photo> photos);
+	public void processTaggedPhotos(String id, ArrayList<Photo> photos);
 	public void addAlbum(String id, Album album);
 	public void refreshPhotos(String id, Photo photo);
 	public void addAlbumPhotos(String id, String albumId, ArrayList<Photo> photos);

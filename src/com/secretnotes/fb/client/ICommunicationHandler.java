@@ -15,6 +15,7 @@ public interface ICommunicationHandler {
 	public void sendAlbumsRequest(String userId, AsyncCallback<JavaScriptObject> callback);
 	public void sendPhotoRequest(String photoId, AsyncCallback<JavaScriptObject> callback);
 	public void sendAlbumPhotosRequest(String albumId, AsyncCallback<JavaScriptObject> callback);
+	public void sendPhotoTagsRequest(String userId, AsyncCallback<JavaScriptObject> callback);
 	public void registerLoginCallback(AsyncCallback<JavaScriptObject> callback);
 	public void setNotesController(INotesController notesController);
 }

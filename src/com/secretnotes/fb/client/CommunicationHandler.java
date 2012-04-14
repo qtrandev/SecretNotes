@@ -2,6 +2,8 @@ package com.secretnotes.fb.client;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class CommunicationHandler implements ICommunicationHandler {
@@ -72,6 +74,14 @@ public class CommunicationHandler implements ICommunicationHandler {
 		getFbCore().api(request, callback);
 	}
 	
+	public void sendFQLRequest(String request, AsyncCallback<JavaScriptObject> callback) {
+		// Using special method to send out FQL queries since sendRequest() method isn't working
+		JSONObject query = new JSONObject();
+		query.put("method", new JSONString("fql.query"));
+		query.put("query", new JSONString(request));
+		getFbCore().api(query.getJavaScriptObject(), callback);
+	}
+	
 	public void sendCurrentUserRequest(AsyncCallback<JavaScriptObject> callback) {
 		sendRequest("/me", callback);
 	}
@@ -94,5 +104,9 @@ public class CommunicationHandler implements ICommunicationHandler {
 	
 	public void sendAlbumPhotosRequest(String albumId, AsyncCallback<JavaScriptObject> callback) {
 		sendRequest("/" +albumId+ "/photos?limit="+PHOTO_ALBUM_LIMIT, callback);
+	}
+	
+	public void sendPhotoTagsRequest(String userId, AsyncCallback<JavaScriptObject> callback) {
+		sendFQLRequest("SELECT object_id FROM photo_tag WHERE subject="+userId, callback);
 	}
 }

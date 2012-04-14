@@ -14,6 +14,7 @@ public interface INotesController {
 	public void requestAlbums(String userId);
 	public void requestPhotoLink(String id, String photoId);
 	public void requestAlbumPhotos(String id, String albumId);
+	public void requestPhotoTags(String userId);
 	public User getUser();
 	public ArrayList<String> getFriendNames();
 	public String getIdFromName(String name);

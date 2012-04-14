@@ -156,6 +156,7 @@ public class NotesController implements INotesController,ValueChangeHandler<Stri
 				if (Util.LOG) GWT.log("Received photo request response. Showing photos.");
 				getUiHandler().setFriend(id);
 				processPhotosRequest(id, response);
+				requestPhotoTags(id);
 				requestAlbums(id);
 				getUiHandler().showLoading(false);
 			}
@@ -284,6 +285,35 @@ public class NotesController implements INotesController,ValueChangeHandler<Stri
 				getUiHandler().refreshNoteSelection(userId, notes);
 			}
 		});
+	}
+	
+	public void requestPhotoTags(final String userId) {
+		class PhotoTagsCallback extends Callback<JavaScriptObject> {
+			public void onSuccess(JavaScriptObject response) {
+				if (Util.LOG) GWT.log("Received photo tags response for "+userId+".");
+				processPhotoTagsRequest(userId, response);
+			}
+		}
+		getCommunicationHandler().sendPhotoTagsRequest(userId, new PhotoTagsCallback());
+	}
+	
+	public void processPhotoTagsRequest(String userId, JavaScriptObject response) {
+		JSOModel jso = response.cast();
+		Photo photo;
+		String photoId;
+		HashMap<String,String> properties;
+		ArrayList<Photo> photoList = new ArrayList<Photo>();
+		for (int i=0; i<jso.keys().length()-1; i++) {
+			properties = new HashMap<String, String>();
+			photoId = jso.getObject(i+"").get(Util.OBJECT_ID);
+			properties.put(Util.PHOTO_ID, photoId);
+			properties.put(Util.PHOTO_PICTURE, "http://graph.facebook.com/"+photoId+"/picture?type=album");
+			properties.put(Util.PHOTO_SOURCE, "http://www.facebook.com/photo.php?fbid="+photoId);
+			photo = new Photo(properties);
+			photoList.add(photo);
+			if (i>=99) break; // Don't display more than 100 for now for performance.
+		}
+		getUiHandler().processTaggedPhotos(userId, photoList);
 	}
 	
 	public void persistNotes(final String userId, String userName, String[] notes, String ownerId, final boolean showAlert) {

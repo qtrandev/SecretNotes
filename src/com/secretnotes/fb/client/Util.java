@@ -54,4 +54,5 @@ public class Util {
 	
 	public static final String ARRAY_DATA = "data";
 	public static final String PHOTO_COMMENTS = "comments"; //array
+	public static final String OBJECT_ID = "object_id";
 }
