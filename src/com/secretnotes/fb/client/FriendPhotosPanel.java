@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Label;
 import com.secretnotes.fb.client.data.Album;
 import com.secretnotes.fb.client.data.Photo;
@@ -18,6 +19,7 @@ public class FriendPhotosPanel extends DataRequestPanel {
 	private PhotoListPanel photosPanel;
 	private User currentFriend;
 	private Label friendNameLabel;
+	private Anchor photoLink;
 	
 	public FriendPhotosPanel(INotesController notesController) {
 		super(notesController);
@@ -36,6 +38,9 @@ public class FriendPhotosPanel extends DataRequestPanel {
 	public void processUploadedPhotos(ArrayList<Photo> photos) {
 		resetPanel();
 		getFriendNameLabel().setText(currentFriend.getName());
+		String link = "http://www.facebook.com/profile.php?id="+currentFriend.getUserId()+"&sk=photos";
+		getPhotoLink().setText(link);
+		getPhotoLink().setHref(link);
 		getPhotosPanel().displayPhotos(photos);
 	}
 	
@@ -65,6 +70,7 @@ public class FriendPhotosPanel extends DataRequestPanel {
 	public void resetPanel() {
 		clear();
 		add(getFriendNameLabel());
+		add(getPhotoLink());
 		getPhotosPanel().resetPanel();
 		add(getPhotosPanel());
 		getAlbumListPanel().resetPanel();
@@ -102,5 +108,14 @@ public class FriendPhotosPanel extends DataRequestPanel {
 			friendNameLabel.setStyleName("friendNameLabel");
 		}
 		return friendNameLabel;
+	}
+	
+	private Anchor getPhotoLink() {
+		if (photoLink == null) {
+			photoLink = new Anchor();
+			photoLink.setTarget("_blank");
+			photoLink.setStyleName("photoLink");
+		}
+		return photoLink;
 	}
 }
