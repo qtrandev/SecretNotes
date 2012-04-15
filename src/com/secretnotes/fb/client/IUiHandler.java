@@ -16,6 +16,7 @@ public interface IUiHandler {
 	public void processTaggedPhotos(String id, ArrayList<Photo> photos);
 	public void addAlbum(String id, Album album);
 	public void refreshPhotos(String id, Photo photo);
+	public void refreshTaggedPhotos(String userId, Photo photo);
 	public void addAlbumPhotos(String id, String albumId, ArrayList<Photo> photos);
 	public void refreshNoteSelection(String userId, String[] notes);
 	public String getCurrentPage();

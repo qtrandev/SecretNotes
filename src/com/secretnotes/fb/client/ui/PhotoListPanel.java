@@ -10,6 +10,7 @@ public class PhotoListPanel extends FlowPanel {
 	
 	private Label titleLabel;
 	private Label photoCountLabel;
+	private ArrayList<PhotoPanel> photoPanels;
 
 	public PhotoListPanel() {
 		super();
@@ -30,7 +31,17 @@ public class PhotoListPanel extends FlowPanel {
 		for (Photo photo : photos) {
 			photoPanel = new PhotoPanel();
 			photoPanel.displayPhoto(photo);
+			getPhotoPanels().add(photoPanel);
 			add(photoPanel);
+		}
+	}
+	
+	public void refreshPhoto(Photo photo) {
+		for (PhotoPanel photoPanel : getPhotoPanels()) {
+			if (photoPanel.getPhotoId().equals(photo.getPhotoId())) {
+				photoPanel.displayPhoto(photo);
+				break;
+			}
 		}
 	}
 	
@@ -54,6 +65,13 @@ public class PhotoListPanel extends FlowPanel {
 			photoCountLabel.setStyleName("photoListCount");
 		}
 		return photoCountLabel;
+	}
+	
+	public ArrayList<PhotoPanel> getPhotoPanels() {
+		if (photoPanels == null) {
+			photoPanels = new ArrayList<PhotoPanel>();
+		}
+		return photoPanels;
 	}
 	
 	public void setDisplayTitle(String text) {

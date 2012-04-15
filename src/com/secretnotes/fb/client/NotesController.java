@@ -215,7 +215,6 @@ public class NotesController implements INotesController,ValueChangeHandler<Stri
 	public void requestPhotoLink(final String id, String photoId) {
 		class PhotoLinkCallback extends Callback<JavaScriptObject> {
 			public void onSuccess(JavaScriptObject response) {
-				if (Util.LOG) GWT.log("Received photo link request response. Processing photo link.");
 				processPhotoLink(id, response);
 				getUiHandler().showLoading(false);
 			}
@@ -236,6 +235,31 @@ public class NotesController implements INotesController,ValueChangeHandler<Stri
 		Photo photo = new Photo(properties);
 		getModelController().addPhoto(photo);
 		getUiHandler().refreshPhotos(id, photo);
+	}
+	
+	public void requestTaggedPhoto(final String userId, String photoId) {
+		class PhotoTagCallback extends Callback<JavaScriptObject> {
+			public void onSuccess(JavaScriptObject response) {
+				processTaggedPhoto(userId, response);
+				getUiHandler().showLoading(false);
+			}
+		}
+		getUiHandler().showLoading(true);
+		getCommunicationHandler().sendPhotoRequest(photoId, new PhotoTagCallback());
+	}
+	
+	public void processTaggedPhoto(String userId, JavaScriptObject response) {
+		JSOModel jso = response.cast();
+		
+		HashMap<String,String> properties = new HashMap<String, String>();
+		properties.put(Util.PHOTO_ID, jso.get(Util.PHOTO_ID));
+		properties.put(Util.PHOTO_PICTURE, jso.get(Util.PHOTO_PICTURE));
+		properties.put(Util.PHOTO_SOURCE, jso.get(Util.PHOTO_SOURCE));
+		
+		
+		Photo photo = new Photo(properties);
+		getModelController().addPhoto(photo);
+		getUiHandler().refreshTaggedPhotos(userId, photo);
 	}
 	
 	public void requestAlbumPhotos(final String id, final String albumId) {
@@ -311,6 +335,7 @@ public class NotesController implements INotesController,ValueChangeHandler<Stri
 			properties.put(Util.PHOTO_SOURCE, "http://www.facebook.com/photo.php?fbid="+photoId);
 			photo = new Photo(properties);
 			photoList.add(photo);
+			requestTaggedPhoto(userId, photoId);
 			if (i>=99) break; // Don't display more than 100 for now for performance.
 		}
 		getUiHandler().processTaggedPhotos(userId, photoList);

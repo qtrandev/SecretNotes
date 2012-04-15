@@ -62,6 +62,10 @@ public class FriendPhotosPanel extends DataRequestPanel {
 		getAlbumListPanel().refreshPhotos(photo);
 	}
 	
+	public void refreshTaggedPhotos(Photo photo) {
+		getTaggedPhotosPanel().refreshPhoto(photo);
+	}
+	
 	public void addAlbumPhotos(String albumId, ArrayList<Photo> photos) {
 		Album album = getAlbumListPanel().getAlbum(albumId);
 		PhotoListPanel photoListPanel = new PhotoListPanel();

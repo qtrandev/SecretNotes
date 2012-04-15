@@ -304,6 +304,10 @@ public class UiHandler implements IUiHandler {
 		getFriendPhotosPanel(id).processTaggedPhotos(photos);
 	}
 	
+	public void refreshTaggedPhotos(String userId, Photo photo) {
+		getFriendPhotosPanel(userId).refreshTaggedPhotos(photo);
+	}
+	
 	public void addAlbum(String id, Album album) {
 		getFriendPhotosPanel(id).addAlbum(id, album);
 	}
