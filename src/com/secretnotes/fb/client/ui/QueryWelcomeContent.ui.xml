@@ -23,10 +23,10 @@
 	</ui:style>
 	
 	<g:HTMLPanel>
-	<div class='{style.welcomeHeader}'>Query Data From Friends</div>
-		<div class='{style.text}'>View various data from your friends.</div>
-	<div class='{style.welcomeHeader}'>Query Specific Friend Notes</div>
-		<div class='{style.text}'>Better search and filtering of friends' notes.</div>
+	<div class='{style.welcomeHeader}'>Dream Feature</div>
+		<div class='{style.text}'>Feature made possible by dreams, unicorn smiles, and rainbows.</div>
+	<div class='{style.welcomeHeader}'>Future Feature</div>
+		<div class='{style.text}'>This feature will be possible if there's ever more time.</div>
 	</g:HTMLPanel>
 
 </ui:UiBinder>
