@@ -18,7 +18,7 @@ public class CommunicationHandler implements ICommunicationHandler {
 	private boolean cookie;
 	
 	private static int PHOTO_UPLOAD_LIMIT = 25;
-	private static int ALBUM_LIMIT = 25;
+	private static int ALBUM_LIMIT = 100;
 	private static int PHOTO_ALBUM_LIMIT = 100;
 	
 	public CommunicationHandler() {
