@@ -34,7 +34,7 @@ public class HomePanel extends FlowPanel {
 	private TabLayoutPanel getHomeContainerPanel() {
 		if (homeContainerPanel == null) {
 			homeContainerPanel = new TabLayoutPanel(30.0, Unit.PX);
-			homeContainerPanel.setHeight("600px");
+			homeContainerPanel.setHeight("800px");
 		}
 		return homeContainerPanel;
 	}
@@ -50,5 +50,10 @@ public class HomePanel extends FlowPanel {
 		UserWelcomePanel userWelcomePanel  = new UserWelcomePanel(user);
 		userWelcomePanel.getElement().setId("userWelcomePanel");
 		return userWelcomePanel;
+	}
+	
+	public void showMobileView(int addedHeight) {
+		int currentHeight = getHomeContainerPanel().getOffsetHeight();
+		getHomeContainerPanel().setHeight(((currentHeight<addedHeight)?addedHeight:(currentHeight*2))+"px");
 	}
 }

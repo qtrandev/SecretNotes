@@ -15,6 +15,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.secretnotes.fb.client.data.Album;
@@ -44,6 +45,8 @@ public class UiHandler implements IUiHandler {
 	private String currentPage = Util.PAGE_HOME;
 	private Element loadingGif;
 	
+	private static int CONTENT_HEIGHT = 1000;
+	
 	public UiHandler(IDataContainer dataContainer) {
 		this.dataContainer = dataContainer;
 	}
@@ -70,7 +73,7 @@ public class UiHandler implements IUiHandler {
 		showLoading(false);
 		
         getFriendsContainerPanel().add(getFriendsPanel(), "Friends");
-        getFriendsContainerPanel().setHeight("600px");
+        getFriendsContainerPanel().setHeight("2000px");
         getFriendsPanel().getElement().setId("friendsPanel");
         showHomePanel();
 	}
@@ -150,6 +153,17 @@ public class UiHandler implements IUiHandler {
 		loadingGif.getStyle().setVisibility(show?Visibility.VISIBLE:Visibility.HIDDEN);
 	}
 	
+	/** Force screen size of application to be bigger for mobile browsers
+	 * since they don't support nested scroll bars. */
+	public void showMobileView() {
+		int currentHeight = getFriendsContainerPanel().getOffsetHeight();
+		getFriendsContainerPanel().setHeight(((currentHeight<CONTENT_HEIGHT)?CONTENT_HEIGHT:(currentHeight*2))+"px");
+		getNotesDisplay().showMobileView(CONTENT_HEIGHT);
+		getHomePanel().showMobileView(CONTENT_HEIGHT);
+		getAboutPanel().showMobileView(CONTENT_HEIGHT);
+		getSandboxPanel().showMobileView(CONTENT_HEIGHT);
+	}
+	
 	private FlowPanel getMainPanel() {
 		if (mainPanel == null) {
 			mainPanel = new FlowPanel();
@@ -214,12 +228,22 @@ public class UiHandler implements IUiHandler {
 			Anchor aboutLink = new Anchor();
 			aboutLink.setHref("#"+Util.PAGE_ABOUT);
 			aboutLink.getElement().setId("aboutLink");
+				
+			PushButton mobileViewButton = new PushButton(new Image("mobile_view.png"));
+			mobileViewButton.getElement().setId("mobileViewButton");
+			mobileViewButton.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					showMobileView();
+				}
+			});
 			
 			navPanel.add(homeLink);
 			navPanel.add(friendsLink);
 			navPanel.add(notesLink);
 			navPanel.add(queryLink);
 			navPanel.add(aboutLink);
+			navPanel.add(mobileViewButton);
 		}
 		return navPanel;
 	}

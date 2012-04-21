@@ -43,7 +43,7 @@ public class NotesContainerPanel extends FlowPanel {
 	private TabLayoutPanel getAboutContainerPanel() {
 		if (sandboxContainerPanel == null) {
 			sandboxContainerPanel = new TabLayoutPanel(30.0, Unit.PX);
-			sandboxContainerPanel.setHeight("600px");
+			sandboxContainerPanel.setHeight("2000px");
 		}
 		return sandboxContainerPanel;
 	}
@@ -69,5 +69,10 @@ public class NotesContainerPanel extends FlowPanel {
 			randomNotesPanel.add(new QueryWelcomeContent());
 		}
 		return randomNotesPanel;
+	}
+	
+	public void showMobileView(int addedHeight) {
+		int currentHeight = getAboutContainerPanel().getOffsetHeight();
+		getAboutContainerPanel().setHeight(((currentHeight<addedHeight)?addedHeight:(currentHeight*2))+"px");
 	}
 }

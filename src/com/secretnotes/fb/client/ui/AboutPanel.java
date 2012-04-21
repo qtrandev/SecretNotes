@@ -54,4 +54,9 @@ public class AboutPanel extends FlowPanel {
 		}
 		return resourcePanel;
 	}
+	
+	public void showMobileView(int addedHeight) {
+		int currentHeight = getAboutContainerPanel().getOffsetHeight();
+		getAboutContainerPanel().setHeight(((currentHeight<addedHeight)?addedHeight:(currentHeight*2))+"px");
+	}
 }

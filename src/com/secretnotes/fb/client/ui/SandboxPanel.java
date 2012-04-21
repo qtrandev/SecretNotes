@@ -74,4 +74,9 @@ public class SandboxPanel extends FlowPanel {
 		}
 		return hotOrNotPanel;
 	}
+	
+	public void showMobileView(int addedHeight) {
+		int currentHeight = getAboutContainerPanel().getOffsetHeight();
+		getAboutContainerPanel().setHeight(((currentHeight<addedHeight)?addedHeight:(currentHeight*2))+"px");
+	}
 }
